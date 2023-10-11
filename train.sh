@@ -8,7 +8,7 @@
 #SBATCH --export=ALL
 #SBATCH --time=72:00:00
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=ryi5@jh.edu
+#SBATCH --mail-user=xfang22@jh.edu
 #SBATCH --mem-per-cpu=8G   # memory per cpu-core
 
 ml python

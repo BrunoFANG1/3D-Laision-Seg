@@ -1,3 +1,35 @@
+import torch
+from monai.losses import FocalLoss
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.autograd import Variable
+
+
+class BCEDiceLoss(nn.Module):
+    def __init__(self, a, b):
+        super(BCEDiceLoss, self).__init__()
+        self.a = a
+        self.bce = nn.BCEWithLogitsLoss()
+        self.b = b
+        self.dice = DiceLoss()
+    def forward(self, input, target):
+        inputs = F.sigmoid(input)
+        inputs = inputs.view(-1)
+        targets = target.view(-1)  
+        return self.a*self.bce(inputs,targets)+self.b*self.dice(inputs, targets)
+
+
+class DiceLoss(nn.Module):
+    def __init__(self):
+        super().__init__()
+    def forward(self, inputs, target, smooth =1 ):
+        inputs = F.sigmoid(inputs)
+        inputs = inputs.view(-1)
+        targets = target.view(-1)
+        intersection = (inputs*targets).sum()
+        dice = (2.0 * intersection + smooth)/(inputs.sum()+targets.sum()+smooth)
+        return torch.clamp((1-dice),0,1)
 
 
 class DiceLoss(nn.Module):

@@ -4,6 +4,8 @@ import SimpleITK as sitk
 from torch.utils.data.dataset import Dataset
 from torch.utils.data import DataLoader
 from multiprocessing import Pool
+import os
+import json
 
 class CTDataset(Dataset):
     def __init__(self, CT_image_root, MRI_label_root, transform=None):
@@ -12,19 +14,23 @@ class CTDataset(Dataset):
         self.transform = transform
         self.CT_name = sorted(os.listdir(os.path.join(CT_image_root)))
         self.MRI_name = sorted(os.listdir(os.path.join(MRI_label_root)))
-        self.target_size = self.compute_target_size()
-
-    def compute_bounding_box(self, CT_ID):
-        CT_image = sitk.ReadImage(os.path.join(self.CT_path, CT_ID), sitk.sitkFloat32)
-        label_shape_filter = sitk.LabelShapeStatisticsImageFilter()
-        label_shape_filter.Execute(sitk.OtsuThreshold(CT_image, 0, 1, 200))
-        bounding_box = label_shape_filter.GetBoundingBox(1)
-        return bounding_box[3:6] 
+        
+        if os.path.exists('max_dims.json'):
+            with open('max_dims.json', 'r') as f:
+                self.target_size = tuple(json.load(f))
+        else:
+            self.target_size = self.compute_target_size()
 
     def compute_target_size(self):
-        with Pool() as pool:
-            all_dims = pool.map(self.compute_bounding_box, self.CT_name)
-        max_dims = [max(dim) for dim in zip(*all_dims)]  # Find max dimensions across all bounding boxes
+         # Find max dimensions across all bounding boxes
+        
+        if os.path.exists('max_dims.json'):
+            with open('max_dims.json', 'w') as f:
+                json.dump(max_dims, f)
+        else:
+            print("failure loading bounding box dim")
+            break
+
         return tuple(max_dims)
 
     def preprocess(self, CT_image, MRI_image):
@@ -48,8 +54,11 @@ class CTDataset(Dataset):
         return CT_tensor, MRI_tensor
 
     def __getitem__(self, index):
+        ############################# We have a bounding box, make sure brain is not larger than bounding box or we need to resize the image
+        
         CT_ID = self.CT_name[index]
         MRI_ID = self.MRI_name[index]
+
         CT_image = sitk.ReadImage(os.path.join(self.CT_path, CT_ID), sitk.sitkFloat32)
         MRI_image = sitk.ReadImage(os.path.join(self.MRI_path, MRI_ID), sitk.sitkFloat32)
         
@@ -60,36 +69,15 @@ class CTDataset(Dataset):
             CT_tensor = self.transform(CT_tensor)
             MRI_tensor = self.transform(MRI_tensor)
         
-        MRI_one_hot = to_one_hot_3d(MRI_tensor, 2)
         
-        return CT_ID, MRI_ID, CT_tensor, MRI_tensor, MRI_one_hot
+        return CT_ID, MRI_ID, CT_tensor, MRI_tensor
 
     def __len__(self):
         return len(self.CT_name)
 
 
-def to_one_hot_3d(tensor, n_classes): #shape = [batch, s, h, w]-> [batch, s, h, w, c]-> [batch, c, h, w]
-    """
-    tensor 1 is background prediction output
-    tensor 2 is foreward prediction output
-    ###### why change it to two tensor??????????????
-    """
-    b, s, h, w = tensor.size()
-    if n_classes == 2:
-        tensor1, tensor2 = torch.clone(tensor), torch.clone(tensor)
-        tensor1[tensor == 0]  = 1.0
-        tensor1[tensor == 1]  = 0.0
-        tensor2[tensor == 1]  = 1.0
-        tensor2[tensor == 0]  = 0.0
-        tensor1, tensor2 = tensor1.unsqueeze(-1), tensor2.unsqueeze(-1)
-        one_hot = torch.cat((tensor1, tensor2), -1)
-        one_hot = one_hot.squeeze(0)
-        one_hot = one_hot.permute(3,0,1,2)
-    return one_hot
-
-
-
 def main():
+    
     print("start working")
     train_set = CTDataset(CT_image_root = "../dataset/images/", MRI_label_root = "../dataset/labels/")
     print(f"dataset length is {len(train_set)}")
