@@ -177,9 +177,9 @@ class Att_Unet(nn.Module):
         x=x.to("cuda:0")
         a1=a1.to("cuda:0")
         print('x:',x.shape)
-        A1 = self.att1(g = f3, x =a1).to("cuda:0")#attention block1
+        A1 = self.att1(g = f3, x =a1).to("cuda:0") #attention block1
         print('A1:',A1.shape)
-        x = self.encoder5(x).to("cuda:0")#relu(32->64)
+        x = self.encoder5(x).to("cuda:0") #relu(32->64)
         print('x:',x.shape)
         
         # decoder section

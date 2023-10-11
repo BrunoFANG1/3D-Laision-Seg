@@ -1,5 +1,5 @@
 import torch
-from monai.losses import FocalLoss
+# from monai.losses import FocalLoss
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -29,19 +29,6 @@ class DiceLoss(nn.Module):
         targets = target.view(-1)
         intersection = (inputs*targets).sum()
         dice = (2.0 * intersection + smooth)/(inputs.sum()+targets.sum()+smooth)
-        return torch.clamp((1-dice),0,1)
-
-
-class DiceLoss(nn.Module):
-    def __init__(self):
-        super().__init__()
-    def forward(self, inputs, target, smooth =1 ):
-        inputs = F.sigmoid(inputs)
-        inputs = inputs.view(-1)
-        targets = target.view(-1)
-        intersection = (inputs*targets).sum()
-        dice = (2.0 * intersection + smooth)/(inputs.sum()+targets.sum()+smooth)
-        print(dice)
         return torch.clamp((1-dice),0,1)
 
 

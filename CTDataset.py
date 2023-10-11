@@ -29,19 +29,21 @@ class CTDataset(Dataset):
                 json.dump(max_dims, f)
         else:
             print("failure loading bounding box dim")
-            break
+            assert False
 
         return tuple(max_dims)
 
     def preprocess(self, CT_image, MRI_image):
-        # Get the bounding box for CT image
-        label_shape_filter = sitk.LabelShapeStatisticsImageFilter()
-        label_shape_filter.Execute(sitk.OtsuThreshold(CT_image, 0, 1, 200))
-        bounding_box = label_shape_filter.GetBoundingBox(1)
+        # Assuming target_size is in the format (depth, height, width)
+        target_size = self.target_size
+
+        # Calculate the starting index for cropping to get a centered crop
+        start_index_CT = [(orig_dim - target_dim) // 2 for orig_dim, target_dim in zip(CT_image.GetSize(), target_size)]
+        start_index_MRI = [(orig_dim - target_dim) // 2 for orig_dim, target_dim in zip(MRI_image.GetSize(), target_size)]
         
-        # Crop both CT and MRI images using the same bounding box
-        cropped_CT = sitk.RegionOfInterest(CT_image, bounding_box[3:6], bounding_box[0:3])
-        cropped_MRI = sitk.RegionOfInterest(MRI_image, bounding_box[3:6], bounding_box[0:3])
+        # Crop both CT and MRI images using the target size
+        cropped_CT = sitk.RegionOfInterest(CT_image, target_size, start_index_CT)
+        cropped_MRI = sitk.RegionOfInterest(MRI_image, target_size, start_index_MRI)
         
         # Convert to numpy arrays
         CT_array = sitk.GetArrayFromImage(cropped_CT)
@@ -77,7 +79,7 @@ class CTDataset(Dataset):
 
 
 def main():
-    
+
     print("start working")
     train_set = CTDataset(CT_image_root = "../dataset/images/", MRI_label_root = "../dataset/labels/")
     print(f"dataset length is {len(train_set)}")
