@@ -13,3 +13,4 @@
 #SBATCH --mem-per-cpu=8G 
 
 python test_run.py
+

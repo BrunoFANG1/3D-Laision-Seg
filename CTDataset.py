@@ -6,6 +6,7 @@ from torch.utils.data import DataLoader
 from multiprocessing import Pool
 import os
 import json
+import numpy as np
 
 class CTDataset(Dataset):
     def __init__(self, CT_image_root, MRI_label_root, transform=None):
@@ -14,12 +15,42 @@ class CTDataset(Dataset):
         self.transform = transform
         self.CT_name = sorted(os.listdir(os.path.join(CT_image_root)))
         self.MRI_name = sorted(os.listdir(os.path.join(MRI_label_root)))
-        
+
         if os.path.exists('max_dims.json'):
             with open('max_dims.json', 'r') as f:
+                print("directly load bounding box dimension")
                 self.target_size = tuple(json.load(f))
         else:
             self.target_size = self.compute_target_size()
+
+        if os.path.exists('global_mean_std.json'):
+            with open('global_mean_std.json', 'r') as f:
+                print("directly load mean and std ")
+                stats = json.load(f)
+                self.global_mean = stats['mean']
+                self.global_std = stats['std']
+        else:
+            print("Start calculating mean and std for preprocee")
+            self.global_mean, self.global_std = self.compute_global_mean_std()
+            with open('global_mean_std.json', 'w') as f:
+                json.dump({'mean': self.global_mean, 'std': self.global_std}, f)
+        
+
+    def compute_global_mean_std(self):
+        all_images = []
+        for CT_ID in self.CT_name:
+            CT_image = sitk.ReadImage(os.path.join(self.CT_path, CT_ID), sitk.sitkFloat32)
+            target_size = self.target_size
+            start_index_CT = [(orig_dim - target_dim) // 2 for orig_dim, target_dim in zip(CT_image.GetSize(), target_size)]
+            cropped_CT = sitk.RegionOfInterest(CT_image, target_size, start_index_CT)
+            CT_array = sitk.GetArrayFromImage(cropped_CT)
+            all_images.append(CT_array)
+        
+        all_images = np.concatenate(all_images, axis=0)  # Concatenate along the depth dimension
+
+        global_mean = float(np.mean(all_images))
+        global_std = float(np.std(all_images))
+        return global_mean, global_std
 
     def compute_target_size(self):
          # Find max dimensions across all bounding boxes
@@ -49,11 +80,15 @@ class CTDataset(Dataset):
         CT_array = sitk.GetArrayFromImage(cropped_CT)
         MRI_array = sitk.GetArrayFromImage(cropped_MRI)
         
+        # Normalize CT image
+        CT_array = (CT_array - self.global_mean) / self.global_std
+        
         # Convert to torch tensors
         CT_tensor = torch.FloatTensor(CT_array).unsqueeze(0)  # Adding channel dimension
         MRI_tensor = torch.FloatTensor(MRI_array).unsqueeze(0)  # Adding channel dimension
         
         return CT_tensor, MRI_tensor
+
 
     def __getitem__(self, index):
         ############################# We have a bounding box, make sure brain is not larger than bounding box or we need to resize the image
@@ -85,7 +120,7 @@ def main():
     print(f"dataset length is {len(train_set)}")
     print("data loads fine")
     train_loader = DataLoader(dataset = train_set, batch_size = 1, shuffle=True)
-    for CT_ID, MRI_ID, CT_preprocess, MRI_preprocess, MRI_preprocess1 in train_loader:
+    for CT_ID, MRI_ID, CT_preprocess, MRI_preprocess in train_loader:
         print(f"The ct id is {CT_ID}")
         print(f"The mri id is {MRI_ID}")
         print(f"The shape of MRI preprocess is {CT_preprocess.shape}")
@@ -95,8 +130,6 @@ def main():
         print(f"ratio of zero and not {torch.sum(CT_preprocess==0)/torch.sum(CT_preprocess!=0)}")
         print(f"max is {MRI_preprocess.max()}")
         print(f"min is {MRI_preprocess.min()}")
-        print(f"label shape is {MRI_preprocess1.shape}")
-        print(f"label max is {MRI_preprocess1.max()}")
         break
 
 
