@@ -6,15 +6,22 @@ from torch.utils.data import DataLoader
 from multiprocessing import Pool
 import os
 import json
+import re
+import torch.nn.functional as F
 import numpy as np
 
 class CTDataset(Dataset):
-    def __init__(self, CT_image_root, MRI_label_root, transform=None):
+    def __init__(self, CT_image_root, MRI_label_root, indices=None, transform=None, padding = False):
         self.CT_path = CT_image_root
         self.MRI_path = MRI_label_root
         self.transform = transform
+        self.padding = padding
         self.CT_name = sorted(os.listdir(os.path.join(CT_image_root)))
         self.MRI_name = sorted(os.listdir(os.path.join(MRI_label_root)))
+        self.check_consistency()
+        if indices is not None:
+            self.CT_name = [self.CT_name[i] for i in indices]
+            self.MRI_name = [self.MRI_name[i] for i in indices]            
 
         if os.path.exists('max_dims.json'):
             with open('max_dims.json', 'r') as f:
@@ -89,6 +96,28 @@ class CTDataset(Dataset):
         
         return CT_tensor, MRI_tensor
 
+    def check_consistency(self):
+        for ct_name, mri_name in zip(self.CT_name, self.MRI_name):
+            ct_digits = re.search(r'\d+', ct_name)
+            mri_digits = re.search(r'\d+', mri_name)
+            assert ct_digits.group() == mri_digits.group(), f"Mismatch: {ct_name} != {mri_name}"
+    
+    # def pad_to_shape(self, tensor, target_shape, value=0):
+    def pad_to_shape(self, tensor, target_shape):
+        # Compute the padding sizes
+        padding = []
+        for dim, target_dim in zip(tensor.shape[-3:], target_shape[-3:]):  # Get the last three dimensions
+            total_pad = target_dim - dim
+            # Split the total padding equally to both sides of the dimension
+            padding.extend([(total_pad // 2), (total_pad - (total_pad // 2))])
+        # Apply padding to the last three dimensions (depth, height, width)
+        padded_tensor = F.pad(tensor, pad=(padding[4], padding[5], padding[2], padding[3], padding[0], padding[1]))
+        return padded_tensor
+    #     return resized_tensor
+
+
+
+
 
     def __getitem__(self, index):
         ############################# We have a bounding box, make sure brain is not larger than bounding box or we need to resize the image
@@ -105,8 +134,11 @@ class CTDataset(Dataset):
         if self.transform:
             CT_tensor = self.transform(CT_tensor)
             MRI_tensor = self.transform(MRI_tensor)
-        
-        
+
+        if self.padding:
+            CT_tensor = self.pad_to_shape(CT_tensor, [1, 190, 190, 190])
+            MRI_tensor = self.pad_to_shape(MRI_tensor, [1, 190, 190, 190])
+
         return CT_ID, MRI_ID, CT_tensor, MRI_tensor
 
     def __len__(self):
@@ -116,14 +148,15 @@ class CTDataset(Dataset):
 def main():
 
     print("start working")
-    train_set = CTDataset(CT_image_root = "../dataset/images/", MRI_label_root = "../dataset/labels/")
+    train_set = CTDataset(CT_image_root = "../dataset/images/", MRI_label_root = "../dataset/labels/", padding=True)
     print(f"dataset length is {len(train_set)}")
     print("data loads fine")
     train_loader = DataLoader(dataset = train_set, batch_size = 1, shuffle=True)
     for CT_ID, MRI_ID, CT_preprocess, MRI_preprocess in train_loader:
         print(f"The ct id is {CT_ID}")
         print(f"The mri id is {MRI_ID}")
-        print(f"The shape of MRI preprocess is {CT_preprocess.shape}")
+        print(f"The shape of CT preprocess is {CT_preprocess.shape}")
+        print(f"The shape of MRI preprocess is {MRI_preprocess.shape}")
         print(f"max of image is {CT_preprocess.max()}")
         print(f"min of image is {CT_preprocess.min()}")
         print(f"mean is {CT_preprocess.mean()}")
