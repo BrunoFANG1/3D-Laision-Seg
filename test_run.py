@@ -83,7 +83,8 @@ def main(rank, world_size):
     train_set = CTDataset(CT_image_root="/home/bruno/xfang/dataset/images/", 
                           MRI_label_root="/home/bruno/xfang/dataset/labels/", 
                           indices=train_indices,
-                          padding = True)
+                          padding = True,
+                          slicing = True)
     test_set = CTDataset(CT_image_root="/home/bruno/xfang/dataset/images/", 
                          MRI_label_root="/home/bruno/xfang/dataset/labels/", 
                          indices=test_indices,

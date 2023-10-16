@@ -11,10 +11,11 @@ import torch.nn.functional as F
 import numpy as np
 
 class CTDataset(Dataset):
-    def __init__(self, CT_image_root, MRI_label_root, indices=None, transform=None, padding = False):
+    def __init__(self, CT_image_root, MRI_label_root, indices=None, transform=None, padding = False, slicing=False):
         self.CT_path = CT_image_root
         self.MRI_path = MRI_label_root
         self.transform = transform
+        self.slicing = slicing
         self.padding = padding
         self.CT_name = sorted(os.listdir(os.path.join(CT_image_root)))
         self.MRI_name = sorted(os.listdir(os.path.join(MRI_label_root)))
@@ -120,7 +121,7 @@ class CTDataset(Dataset):
 
 
     def __getitem__(self, index):
-        ############################# We have a bounding box, make sure brain is not larger than bounding box or we need to resize the image
+        ########################### We have a bounding box, make sure brain is not larger than bounding box or we need to resize the image
         
         CT_ID = self.CT_name[index]
         MRI_ID = self.MRI_name[index]
@@ -136,8 +137,14 @@ class CTDataset(Dataset):
             MRI_tensor = self.transform(MRI_tensor)
 
         if self.padding:
-            CT_tensor = self.pad_to_shape(CT_tensor, [1, 190, 190, 190])
-            MRI_tensor = self.pad_to_shape(MRI_tensor, [1, 190, 190, 190])
+            print(f"we pad the image to size (1, 190, 190, 190)")
+            CT_tensor = self.pad_to_shape(CT_tensor, [1, 224, 224, 224])
+            MRI_tensor = self.pad_to_shape(MRI_tensor, [1, 224, 224, 224])
+
+        if self.slicing:
+            print("we convert 3D to 2D slice")
+            CT_tensor = CT_tensor[:, 80, :, :]
+            MRI_tensor = MRI_tensor[:, 80, :, :]
 
         return CT_ID, MRI_ID, CT_tensor, MRI_tensor
 
@@ -148,7 +155,7 @@ class CTDataset(Dataset):
 def main():
 
     print("start working")
-    train_set = CTDataset(CT_image_root = "../dataset/images/", MRI_label_root = "../dataset/labels/", padding=True)
+    train_set = CTDataset(CT_image_root = "../dataset/images/", MRI_label_root = "../dataset/labels/", padding=True, slicing = True)
     print(f"dataset length is {len(train_set)}")
     print("data loads fine")
     train_loader = DataLoader(dataset = train_set, batch_size = 1, shuffle=True)
