@@ -1,5 +1,6 @@
 import torch
 import argparse
+import wandb
 import torch.distributed as dist
 import torch.multiprocessing as mp
 from sklearn.model_selection import train_test_split
@@ -74,7 +75,21 @@ config = get_config(args)
 
 def main(rank, world_size):
     setup(rank, world_size)
-    writer = SummaryWriter()
+
+    wandb.init(
+        # set the wandb project where this run will be logged
+        project="3D_Unet",
+
+        name="SwinUnet",
+        
+        # track hyperparameters and run metadata
+        config={
+        "learning_rate": 0.02,
+        "architecture": "SwinUnet_test",
+        "dataset": "3D",
+        "epochs": 20,
+        }
+    )
 
     # construct dataset
     all_indices = list(range(len(os.listdir("/home/bruno/xfang/dataset/images/"))))
@@ -84,37 +99,42 @@ def main(rank, world_size):
                           MRI_label_root="/home/bruno/xfang/dataset/labels/", 
                           indices=train_indices,
                           padding = True,
-                          slicing = True)
+                          slicing = True,
+                          )
     test_set = CTDataset(CT_image_root="/home/bruno/xfang/dataset/images/", 
                          MRI_label_root="/home/bruno/xfang/dataset/labels/", 
                          indices=test_indices,
-                         padding = True)
+                         padding= True,
+                         slicing = True,
+                         )
 
     train_sampler = DistributedSampler(train_set)
-    train_dataloader = DataLoader(dataset=train_set, batch_size=4, sampler=train_sampler)
+    train_dataloader = DataLoader(dataset=train_set, batch_size=100, sampler=train_sampler)
     test_sampler = DistributedSampler(test_set)
-    test_dataloader = DataLoader(dataset=test_set, batch_size=2, sampler=test_sampler)
+    test_dataloader = DataLoader(dataset=test_set, batch_size=100, sampler=test_sampler)
 
 
-    # model = UNet3D(in_channels=1, out_channels=1, num_levels=4)
+    # model = UNet3D(in_channels=1, out_channels=1, num_levels=3)
     model = ViT_seg(config, num_classes=1, img_size=190)
 
     model = DDP(model.to(rank), device_ids=[rank])
 
     loss = DiceLoss(normalization='sigmoid')
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-5)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-2, weight_decay=1e-4)
 
-    epochs = 20
+    epochs = 50
+    print("start training")
     for epoch in range(epochs):
 
         model.train()
         train_sampler.set_epoch(epoch)  # ensure shuffling is per-epoch
-        progress_bar = tqdm(train_dataloader, desc=f"Epoch {epoch + 1}/{epochs}")
 
         cumulative_loss = 0.0
         ct_images_processed = 0
 
-        for ctid, mriid, img, mask in progress_bar:
+        wandb.log({"epoch": epoch})
+
+        for ctid, mriid, img, mask in train_dataloader:
             optimizer.zero_grad()
             img, mask = img.to(rank), mask.to(rank)
             output = model(img)
@@ -124,10 +144,29 @@ def main(rank, world_size):
 
             cumulative_loss += loss_.item() * img.size(0)
             ct_images_processed += img.size(0)
-            average_loss_per_ct_image = cumulative_loss / ct_images_processed
-            writer.add_scalar('Average Training Loss', average_loss_per_ct_image, epoch)
-            progress_bar.set_description(f"Epoch {epoch + 1}/{epochs}, Average Loss per CT Image: {average_loss_per_ct_image:.4f}")
-            
+            loss_sum = loss_.clone()
+            dist.all_reduce(loss_sum, op=dist.ReduceOp.SUM)
+            average_loss_per_ct_image = loss_sum.item() / world_size
+
+            wandb.log({"average_loss_per_ct_image": average_loss_per_ct_image})
+
+        if epoch % 2 == 1:
+            model.eval()  # Set the model to evaluation mode
+            cumulative_loss = 0.0  # Reset cumulative loss
+            ct_images_processed = 0  # Reset count of images processed
+
+            with torch.no_grad():  # Disable gradient computation
+                for ctid, mriid, img, mask in test_dataloader:
+                    img, mask = img.to(rank), mask.to(rank)
+                    output = model(img)
+                    loss_ = loss(output, mask)  # Compute loss
+                    cumulative_loss += loss_.item() * img.size(0)
+                    ct_images_processed += img.size(0)
+
+            test_loss_epoch = cumulative_loss / ct_images_processed  # Corrected divisor
+
+            wandb.log({"test loss": test_loss_epoch})
+
     cleanup()
 
 def setup(rank, world_size):
@@ -140,5 +179,5 @@ def cleanup():
 
 if __name__ == '__main__':
     world_size = torch.cuda.device_count()
-    print(f"There are {world_size+1} CUDA device")
+    print(f"There are {world_size} CUDA device")
     mp.spawn(main, args=(world_size,), nprocs=world_size, join=True)

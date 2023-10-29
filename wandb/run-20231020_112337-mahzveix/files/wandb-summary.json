@@ -1,0 +1,1 @@
+{"epoch": 49, "_timestamp": 1697826142.4333427, "_runtime": 10724.607764720917, "_step": 2024, "average_loss_per_ct_image": 0.6658976078033447, "test loss": 0.9914050862706941, "_wandb": {"runtime": 10724}}

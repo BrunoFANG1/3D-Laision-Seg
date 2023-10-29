@@ -1,0 +1,72 @@
+2023-10-20 14:14:42,273 INFO    StreamThr :3683438 [internal.py:wandb_internal():86] W&B internal server running at pid: 3683438, started at: 2023-10-20 14:14:42.272554
+2023-10-20 14:14:42,275 DEBUG   HandlerThread:3683438 [handler.py:handle_request():146] handle_request: status
+2023-10-20 14:14:42,283 INFO    WriterThread:3683438 [datastore.py:open_for_write():85] open: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/run-2j0bnwi8.wandb
+2023-10-20 14:14:42,284 DEBUG   SenderThread:3683438 [sender.py:send():380] send: header
+2023-10-20 14:14:42,300 DEBUG   SenderThread:3683438 [sender.py:send():380] send: run
+2023-10-20 14:14:42,650 INFO    SenderThread:3683438 [dir_watcher.py:__init__():211] watching files in: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files
+2023-10-20 14:14:42,650 INFO    SenderThread:3683438 [sender.py:_start_run_threads():1122] run started: 2j0bnwi8 with start time 1697825682.272981
+2023-10-20 14:14:42,661 DEBUG   HandlerThread:3683438 [handler.py:handle_request():146] handle_request: check_version
+2023-10-20 14:14:42,661 DEBUG   SenderThread:3683438 [sender.py:send_request():407] send_request: check_version
+2023-10-20 14:14:42,726 DEBUG   HandlerThread:3683438 [handler.py:handle_request():146] handle_request: run_start
+2023-10-20 14:14:42,731 DEBUG   HandlerThread:3683438 [system_info.py:__init__():32] System info init
+2023-10-20 14:14:42,731 DEBUG   HandlerThread:3683438 [system_info.py:__init__():47] System info init done
+2023-10-20 14:14:42,731 INFO    HandlerThread:3683438 [system_monitor.py:start():194] Starting system monitor
+2023-10-20 14:14:42,732 INFO    SystemMonitor:3683438 [system_monitor.py:_start():158] Starting system asset monitoring threads
+2023-10-20 14:14:42,732 INFO    HandlerThread:3683438 [system_monitor.py:probe():214] Collecting system info
+2023-10-20 14:14:42,732 INFO    SystemMonitor:3683438 [interfaces.py:start():190] Started cpu monitoring
+2023-10-20 14:14:42,733 INFO    SystemMonitor:3683438 [interfaces.py:start():190] Started disk monitoring
+2023-10-20 14:14:42,734 INFO    SystemMonitor:3683438 [interfaces.py:start():190] Started gpu monitoring
+2023-10-20 14:14:42,735 INFO    SystemMonitor:3683438 [interfaces.py:start():190] Started memory monitoring
+2023-10-20 14:14:42,736 INFO    SystemMonitor:3683438 [interfaces.py:start():190] Started network monitoring
+2023-10-20 14:14:42,756 DEBUG   HandlerThread:3683438 [system_info.py:probe():196] Probing system
+2023-10-20 14:14:42,761 DEBUG   HandlerThread:3683438 [system_info.py:_probe_git():181] Probing git
+2023-10-20 14:14:42,781 DEBUG   HandlerThread:3683438 [system_info.py:_probe_git():189] Probing git done
+2023-10-20 14:14:42,781 DEBUG   HandlerThread:3683438 [system_info.py:probe():244] Probing system done
+2023-10-20 14:14:42,781 DEBUG   HandlerThread:3683438 [system_monitor.py:probe():223] {'os': 'Linux-4.18.0-477.21.1.el8_8.x86_64-x86_64-with-glibc2.17', 'python': '3.8.18', 'heartbeatAt': '2023-10-20T18:14:42.756989', 'startedAt': '2023-10-20T18:14:42.266717', 'docker': None, 'cuda': None, 'args': ('--cfg', 'model/SwinUnet/configs/swin_tiny_patch4_window7_224_lite.yaml'), 'state': 'running', 'program': '/home/bruno/xfang/code/test_run.py', 'codePathLocal': 'test_run.py', 'codePath': 'test_run.py', 'git': {'remote': 'https://github.com/BrunoFANG1/3D-Laision-Seg.git', 'commit': '9ef29aa4b743981577bc5624b16e4971a327e0e1'}, 'email': None, 'root': '/home/bruno/xfang/code', 'host': 'icgpu10', 'username': 'bruno', 'executable': '/home/bruno/anaconda3/envs/seg/bin/python', 'cpu_count': 64, 'cpu_count_logical': 64, 'cpu_freq': {'current': 2158.322265625, 'min': 0.0, 'max': 0.0}, 'cpu_freq_per_core': [{'current': 2558.759, 'min': 0.0, 'max': 0.0}, {'current': 2548.418, 'min': 0.0, 'max': 0.0}, {'current': 2570.52, 'min': 0.0, 'max': 0.0}, {'current': 2548.995, 'min': 0.0, 'max': 0.0}, {'current': 2553.065, 'min': 0.0, 'max': 0.0}, {'current': 2556.459, 'min': 0.0, 'max': 0.0}, {'current': 2549.672, 'min': 0.0, 'max': 0.0}, {'current': 2563.619, 'min': 0.0, 'max': 0.0}, {'current': 2600.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2600.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2548.033, 'min': 0.0, 'max': 0.0}, {'current': 2554.954, 'min': 0.0, 'max': 0.0}, {'current': 2555.34, 'min': 0.0, 'max': 0.0}, {'current': 2548.911, 'min': 0.0, 'max': 0.0}, {'current': 2572.994, 'min': 0.0, 'max': 0.0}, {'current': 2547.402, 'min': 0.0, 'max': 0.0}, {'current': 2555.484, 'min': 0.0, 'max': 0.0}, {'current': 2600.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}, {'current': 2000.0, 'min': 0.0, 'max': 0.0}], 'disk': {'/': {'total': 19.990234375, 'used': 8.893363952636719}}, 'gpu': 'NVIDIA A100 80GB PCIe', 'gpu_count': 2, 'gpu_devices': [{'name': 'NVIDIA A100 80GB PCIe', 'memory_total': 85899345920}, {'name': 'NVIDIA A100 80GB PCIe', 'memory_total': 85899345920}], 'memory': {'total': 251.53791427612305}}
+2023-10-20 14:14:42,781 INFO    HandlerThread:3683438 [system_monitor.py:probe():224] Finished collecting system info
+2023-10-20 14:14:42,781 INFO    HandlerThread:3683438 [system_monitor.py:probe():227] Publishing system info
+2023-10-20 14:14:42,781 DEBUG   HandlerThread:3683438 [system_info.py:_save_pip():52] Saving list of pip packages installed into the current environment
+2023-10-20 14:14:42,782 DEBUG   HandlerThread:3683438 [system_info.py:_save_pip():68] Saving pip packages done
+2023-10-20 14:14:42,782 DEBUG   HandlerThread:3683438 [system_info.py:_save_conda():75] Saving list of conda packages installed into the current environment
+2023-10-20 14:14:43,652 INFO    Thread-12 :3683438 [dir_watcher.py:_on_file_created():271] file/dir created: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files/conda-environment.yaml
+2023-10-20 14:14:43,652 INFO    Thread-12 :3683438 [dir_watcher.py:_on_file_created():271] file/dir created: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files/requirements.txt
+2023-10-20 14:14:46,614 DEBUG   HandlerThread:3683438 [system_info.py:_save_conda():87] Saving conda packages done
+2023-10-20 14:14:46,615 INFO    HandlerThread:3683438 [system_monitor.py:probe():229] Finished publishing system info
+2023-10-20 14:14:46,621 DEBUG   SenderThread:3683438 [sender.py:send():380] send: files
+2023-10-20 14:14:46,621 INFO    SenderThread:3683438 [sender.py:_save_file():1378] saving file wandb-metadata.json with policy now
+2023-10-20 14:14:46,647 DEBUG   SenderThread:3683438 [sender.py:send():380] send: telemetry
+2023-10-20 14:14:46,659 INFO    Thread-12 :3683438 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files/conda-environment.yaml
+2023-10-20 14:14:46,659 INFO    Thread-12 :3683438 [dir_watcher.py:_on_file_created():271] file/dir created: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files/wandb-metadata.json
+2023-10-20 14:14:46,659 DEBUG   HandlerThread:3683438 [handler.py:handle_request():146] handle_request: stop_status
+2023-10-20 14:14:46,659 DEBUG   HandlerThread:3683438 [handler.py:handle_request():146] handle_request: internal_messages
+2023-10-20 14:14:46,661 DEBUG   SenderThread:3683438 [sender.py:send_request():407] send_request: stop_status
+2023-10-20 14:14:47,014 INFO    wandb-upload_0:3683438 [upload_job.py:push():131] Uploaded file /tmp/tmpxzqu43xrwandb/ht77o5w9-wandb-metadata.json
+2023-10-20 14:14:47,401 DEBUG   HandlerThread:3683438 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 14:14:47,682 INFO    Thread-12 :3683438 [dir_watcher.py:_on_file_created():271] file/dir created: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files/output.log
+2023-10-20 14:14:49,544 DEBUG   HandlerThread:3683438 [handler.py:handle_request():146] handle_request: partial_history
+2023-10-20 14:14:49,545 DEBUG   SenderThread:3683438 [sender.py:send():380] send: history
+2023-10-20 14:14:49,545 DEBUG   SenderThread:3683438 [sender.py:send_request():407] send_request: summary_record
+2023-10-20 14:14:49,546 INFO    SenderThread:3683438 [sender.py:_save_file():1378] saving file wandb-summary.json with policy end
+2023-10-20 14:14:49,694 INFO    Thread-12 :3683438 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files/output.log
+2023-10-20 14:14:49,695 INFO    Thread-12 :3683438 [dir_watcher.py:_on_file_created():271] file/dir created: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files/wandb-summary.json
+2023-10-20 14:14:51,695 INFO    Thread-12 :3683438 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files/output.log
+2023-10-20 14:14:52,699 DEBUG   HandlerThread:3683438 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 14:14:53,700 INFO    Thread-12 :3683438 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files/output.log
+2023-10-20 14:14:55,701 INFO    Thread-12 :3683438 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files/output.log
+2023-10-20 14:14:57,710 INFO    Thread-12 :3683438 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files/output.log
+2023-10-20 14:14:57,752 DEBUG   HandlerThread:3683438 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 14:14:59,711 INFO    Thread-12 :3683438 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files/output.log
+2023-10-20 14:15:01,646 DEBUG   HandlerThread:3683438 [handler.py:handle_request():146] handle_request: stop_status
+2023-10-20 14:15:01,646 DEBUG   SenderThread:3683438 [sender.py:send_request():407] send_request: stop_status
+2023-10-20 14:15:01,649 DEBUG   HandlerThread:3683438 [handler.py:handle_request():146] handle_request: internal_messages
+2023-10-20 14:15:01,715 INFO    Thread-12 :3683438 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files/output.log
+2023-10-20 14:15:02,980 DEBUG   HandlerThread:3683438 [handler.py:handle_request():146] handle_request: status_report
+2023-10-20 14:15:03,713 INFO    Thread-12 :3683438 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files/output.log
+2023-10-20 14:15:05,714 INFO    Thread-12 :3683438 [dir_watcher.py:_on_file_modified():288] file/dir modified: /home/bruno/xfang/code/wandb/run-20231020_141442-2j0bnwi8/files/output.log
+2023-10-20 14:15:06,755 INFO    memory    :3683438 [interfaces.py:monitor():140] Process proc.memory.rssMB has exited.
+2023-10-20 14:15:06,756 DEBUG   SystemMonitor:3683438 [system_monitor.py:_start():172] Starting system metrics aggregation loop
+2023-10-20 14:15:06,756 DEBUG   SystemMonitor:3683438 [system_monitor.py:_start():179] Finished system metrics aggregation loop
+2023-10-20 14:15:06,756 DEBUG   SystemMonitor:3683438 [system_monitor.py:_start():183] Publishing last batch of metrics
+2023-10-20 14:15:06,757 DEBUG   SenderThread:3683438 [sender.py:send():380] send: stats
+2023-10-20 14:15:07,306 WARNING StreamThr :3683438 [internal.py:is_dead():414] Internal process exiting, parent pid 3683405 disappeared
+2023-10-20 14:15:07,306 ERROR   StreamThr :3683438 [internal.py:wandb_internal():152] Internal process shutdown.

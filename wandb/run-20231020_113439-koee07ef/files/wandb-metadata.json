@@ -1,0 +1,300 @@
+{
+    "os": "Linux-4.18.0-477.21.1.el8_8.x86_64-x86_64-with-glibc2.17",
+    "python": "3.8.18",
+    "heartbeatAt": "2023-10-20T15:34:39.805227",
+    "startedAt": "2023-10-20T15:34:39.432544",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/home/bruno/xfang/code/test_run.py",
+    "codePathLocal": "test_run.py",
+    "codePath": "test_run.py",
+    "git": {
+        "remote": "https://github.com/BrunoFANG1/3D-Laision-Seg.git",
+        "commit": "9ef29aa4b743981577bc5624b16e4971a327e0e1"
+    },
+    "email": null,
+    "root": "/home/bruno/xfang/code",
+    "host": "gpu15",
+    "username": "bruno",
+    "executable": "/home/bruno/anaconda3/envs/seg/bin/python",
+    "cpu_count": 48,
+    "cpu_count_logical": 48,
+    "cpu_freq": {
+        "current": 2760.277854166666,
+        "min": 0.0,
+        "max": 0.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2599.999,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2600.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2624.376,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2600.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2600.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2629.206,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2599.999,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2600.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2599.999,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2638.084,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2600.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3600.001,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3598.814,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2635.82,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2599.999,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2640.579,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2600.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2599.999,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2600.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2599.999,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2599.999,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2670.013,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2656.448,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2599.999,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2600.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2599.999,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2600.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2600.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2599.999,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2599.999,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2599.999,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2599.999,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2600.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2600.0,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2599.999,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2599.999,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 3000.0,
+            "min": 0.0,
+            "max": 0.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 19.990234375,
+            "used": 8.745109558105469
+        }
+    },
+    "gpu": "NVIDIA A100-PCIE-40GB",
+    "gpu_count": 4,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA A100-PCIE-40GB",
+            "memory_total": 42949672960
+        },
+        {
+            "name": "NVIDIA A100-PCIE-40GB",
+            "memory_total": 42949672960
+        },
+        {
+            "name": "NVIDIA A100-PCIE-40GB",
+            "memory_total": 42949672960
+        },
+        {
+            "name": "NVIDIA A100-PCIE-40GB",
+            "memory_total": 42949672960
+        }
+    ],
+    "memory": {
+        "total": 188.57088470458984
+    }
+}

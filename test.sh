@@ -6,11 +6,9 @@
 #SBATCH --nodes=1
 #SBATCH --export=ALL
 #SBATCH --partition=a100
-#SBATCH --gpus-per-node=1
-#SBATCH --time=00:10:00
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=xfang22@jh.edu
-#SBATCH --mem-per-cpu=8G 
+#SBATCH --gpus-per-node=4
+#SBATCH --time=03:10:00
+#SBATCH --mem-per-cpu=28G 
 
 python test_run.py
 

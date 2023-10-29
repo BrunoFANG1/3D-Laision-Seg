@@ -1,0 +1,300 @@
+{
+    "os": "Linux-4.18.0-372.9.1.el8.x86_64-x86_64-with-glibc2.17",
+    "python": "3.8.18",
+    "heartbeatAt": "2023-10-20T15:36:38.539416",
+    "startedAt": "2023-10-20T15:36:38.182710",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/home/bruno/xfang/code/test_run.py",
+    "codePathLocal": "test_run.py",
+    "codePath": "test_run.py",
+    "git": {
+        "remote": "https://github.com/BrunoFANG1/3D-Laision-Seg.git",
+        "commit": "9ef29aa4b743981577bc5624b16e4971a327e0e1"
+    },
+    "email": null,
+    "root": "/home/bruno/xfang/code",
+    "host": "gpu17",
+    "username": "bruno",
+    "executable": "/home/bruno/anaconda3/envs/seg/bin/python",
+    "cpu_count": 48,
+    "cpu_count_logical": 48,
+    "cpu_freq": {
+        "current": 3.9415625,
+        "min": 1200.0,
+        "max": 4000.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3.6,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.599,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.599,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.6,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.6,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 3.6,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        },
+        {
+            "current": 4.0,
+            "min": 1200.0,
+            "max": 4000.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 19.990234375,
+            "used": 8.9227294921875
+        }
+    },
+    "gpu": "NVIDIA A100-PCIE-40GB",
+    "gpu_count": 4,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA A100-PCIE-40GB",
+            "memory_total": 42949672960
+        },
+        {
+            "name": "NVIDIA A100-PCIE-40GB",
+            "memory_total": 42949672960
+        },
+        {
+            "name": "NVIDIA A100-PCIE-40GB",
+            "memory_total": 42949672960
+        },
+        {
+            "name": "NVIDIA A100-PCIE-40GB",
+            "memory_total": 42949672960
+        }
+    ],
+    "memory": {
+        "total": 188.57433700561523
+    }
+}

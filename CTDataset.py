@@ -5,17 +5,25 @@ from torch.utils.data.dataset import Dataset
 from torch.utils.data import DataLoader
 from multiprocessing import Pool
 import os
+import csv
 import json
 import re
 import torch.nn.functional as F
 import numpy as np
+import scipy.ndimage as ndimage
+from scipy.ndimage import binary_dilation
+from scipy.stats import describe
+import pandas as pd
+from skimage.morphology import remove_small_objects
+from skimage.measure import label, regionprops
 
 class CTDataset(Dataset):
-    def __init__(self, CT_image_root, MRI_label_root, indices=None, transform=None, padding = False, slicing=False):
+    def __init__(self, CT_image_root, MRI_label_root, indices=None, transform=None, padding = False, slicing=False, normalize=False):
         self.CT_path = CT_image_root
         self.MRI_path = MRI_label_root
         self.transform = transform
         self.slicing = slicing
+        self.normalize = normalize
         self.padding = padding
         self.CT_name = sorted(os.listdir(os.path.join(CT_image_root)))
         self.MRI_name = sorted(os.listdir(os.path.join(MRI_label_root)))
@@ -42,6 +50,9 @@ class CTDataset(Dataset):
             self.global_mean, self.global_std = self.compute_global_mean_std()
             with open('global_mean_std.json', 'w') as f:
                 json.dump({'mean': self.global_mean, 'std': self.global_std}, f)
+
+        if self.slicing == True:
+            print("we convert 3D to 2D images along axiel")
         
 
     def compute_global_mean_std(self):
@@ -89,7 +100,8 @@ class CTDataset(Dataset):
         MRI_array = sitk.GetArrayFromImage(cropped_MRI)
         
         # Normalize CT image
-        CT_array = (CT_array - self.global_mean) / self.global_std
+        if self.normalize:
+            CT_array = (CT_array - self.global_mean) / self.global_std
         
         # Convert to torch tensors
         CT_tensor = torch.FloatTensor(CT_array).unsqueeze(0)  # Adding channel dimension
@@ -117,9 +129,6 @@ class CTDataset(Dataset):
     #     return resized_tensor
 
 
-
-
-
     def __getitem__(self, index):
         ########################### We have a bounding box, make sure brain is not larger than bounding box or we need to resize the image
         
@@ -138,40 +147,27 @@ class CTDataset(Dataset):
 
         if self.padding:
             print(f"we pad the image to size (1, 190, 190, 190)")
-            CT_tensor = self.pad_to_shape(CT_tensor, [1, 224, 224, 224])
-            MRI_tensor = self.pad_to_shape(MRI_tensor, [1, 224, 224, 224])
+            CT_tensor = self.pad_to_shape(CT_tensor, [1, 190, 190, 190])
+            MRI_tensor = self.pad_to_shape(MRI_tensor, [1, 190, 190, 190])
 
         if self.slicing:
-            print("we convert 3D to 2D slice")
-            CT_tensor = CT_tensor[:, 80, :, :]
-            MRI_tensor = MRI_tensor[:, 80, :, :]
+            # Unbind the tensors along the second dimension to get all 2D slices
+            print("nothing")
 
         return CT_ID, MRI_ID, CT_tensor, MRI_tensor
 
     def __len__(self):
         return len(self.CT_name)
 
-
 def main():
-
     print("start working")
-    train_set = CTDataset(CT_image_root = "../dataset/images/", MRI_label_root = "../dataset/labels/", padding=True, slicing = True)
+    train_set = CTDataset(CT_image_root="../dataset/images/", MRI_label_root="../dataset/labels/", padding=True, slicing=False)
     print(f"dataset length is {len(train_set)}")
     print("data loads fine")
-    train_loader = DataLoader(dataset = train_set, batch_size = 1, shuffle=True)
+    train_loader = DataLoader(dataset=train_set, batch_size=2, shuffle=True)
     for CT_ID, MRI_ID, CT_preprocess, MRI_preprocess in train_loader:
-        print(f"The ct id is {CT_ID}")
-        print(f"The mri id is {MRI_ID}")
-        print(f"The shape of CT preprocess is {CT_preprocess.shape}")
-        print(f"The shape of MRI preprocess is {MRI_preprocess.shape}")
-        print(f"max of image is {CT_preprocess.max()}")
-        print(f"min of image is {CT_preprocess.min()}")
-        print(f"mean is {CT_preprocess.mean()}")
-        print(f"ratio of zero and not {torch.sum(CT_preprocess==0)/torch.sum(CT_preprocess!=0)}")
-        print(f"max is {MRI_preprocess.max()}")
-        print(f"min is {MRI_preprocess.min()}")
+        print(CT_preprocess.shape)
         break
-
 
 if __name__ == "__main__":
     main()

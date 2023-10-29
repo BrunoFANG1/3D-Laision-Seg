@@ -1,0 +1,49 @@
+wandb_version: 1
+
+learning_rate:
+  desc: null
+  value: 0.02
+architecture:
+  desc: null
+  value: 3D_Unet_test
+dataset:
+  desc: null
+  value: 3D
+epochs:
+  desc: null
+  value: 20
+_wandb:
+  desc: null
+  value:
+    python_version: 3.8.18
+    cli_version: 0.15.12
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1697423299.274921
+    t:
+      1:
+      - 1
+      - 5
+      - 41
+      - 49
+      - 53
+      - 55
+      - 63
+      2:
+      - 1
+      - 5
+      - 41
+      - 49
+      - 53
+      - 55
+      - 63
+      3:
+      - 16
+      - 23
+      4: 3.8.18
+      5: 0.15.12
+      8:
+      - 5
+      - 9
+      13: linux-x86_64

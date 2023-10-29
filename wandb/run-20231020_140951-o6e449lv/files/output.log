@@ -1,0 +1,1622 @@
+directly load bounding box dimension
+directly load mean and std
+directly load bounding box dimension
+directly load mean and std
+SwinTransformerSys expand initial----depths:[2, 2, 2, 2];depths_decoder:[1, 2, 2, 2];drop_path_rate:0.2;num_classes:1
+---final upsample expand_first---
+/home/bruno/anaconda3/envs/seg/lib/python3.8/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at ../aten/src/ATen/native/TensorShape.cpp:3526.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+start training
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+/home/bruno/anaconda3/envs/seg/lib/python3.8/site-packages/torch/autograd/__init__.py:251: UserWarning: Grad strides do not match bucket view strides. This may indicate grad was not created according to the gradient layout contract, or that the param's strides changed since DDP was constructed.  This is not an error, but may impair performance.
+grad.sizes() = [1, 96, 1, 1], strides() = [96, 1, 96, 96]
+bucket_view.sizes() = [1, 96, 1, 1], strides() = [96, 1, 1, 1] (Triggered internally at ../torch/csrc/distributed/c10d/reducer.cpp:320.)
+  Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
+we convert 3D to 2D slice
+we pad the image to size (1, 190, 190, 190)
