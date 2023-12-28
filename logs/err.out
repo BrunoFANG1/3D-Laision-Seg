@@ -1,6 +1,0 @@
-data_analysis.py:39: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
-  lesion_desc = describe(lesion_data)
-/home/bruno/anaconda3/envs/seg/lib/python3.8/site-packages/scipy/stats/_stats_py.py:1522: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
-  sk = skew(a, axis, bias=bias)
-/home/bruno/anaconda3/envs/seg/lib/python3.8/site-packages/scipy/stats/_stats_py.py:1523: RuntimeWarning: Precision loss occurred in moment calculation due to catastrophic cancellation. This occurs when the data are nearly identical. Results may be unreliable.
-  kurt = kurtosis(a, axis, bias=bias)
