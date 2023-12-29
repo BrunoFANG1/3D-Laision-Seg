@@ -45,21 +45,21 @@ def random_crop_around_lesion(ct_array, mri_array, label_array, lesion_index, cr
     :param crop_size: Desired crop size as a tuple (default is (56, 56, 56))
     :return: Cropped CT, MRI, and label numpy arrays
     """
-    x, y, z = lesion_index
+    _, x, y, z = lesion_index
     cx, cy, cz = crop_size
 
     # Ensure crop size is not larger than the array size
-    assert cx < ct_array.shape[0]
-    assert cy < ct_array.shape[1]
-    assert cz < ct_array.shape[2]
+    assert cx < ct_array.shape[1]
+    assert cy < ct_array.shape[2]
+    assert cz < ct_array.shape[3]
 
     # Calculate the range for the starting point of the crop
     x_min = max(0, x - cx + 1)
-    x_max = min(ct_array.shape[0] - cx, x)
+    x_max = min(ct_array.shape[1] - cx, x)
     y_min = max(0, y - cy + 1)
-    y_max = min(ct_array.shape[1] - cy, y)
+    y_max = min(ct_array.shape[2] - cy, y)
     z_min = max(0, z - cz + 1)
-    z_max = min(ct_array.shape[2] - cz, z)
+    z_max = min(ct_array.shape[3] - cz, z)
 
     # Select a random starting point within the range
     start_x = np.random.randint(x_min, x_max)
@@ -67,11 +67,11 @@ def random_crop_around_lesion(ct_array, mri_array, label_array, lesion_index, cr
     start_z = np.random.randint(z_min, z_max)
 
     # Crop the arrays
-    cropped_ct = ct_array[start_x:start_x + cx, start_y:start_y + cy, start_z:start_z + cz]
-    cropped_mri = mri_array[start_x:start_x + cx, start_y:start_y + cy, start_z:start_z + cz]
-    cropped_label = label_array[start_x:start_x + cx, start_y:start_y + cy, start_z:start_z + cz]
+    cropped_ct = ct_array[:, start_x:start_x + cx, start_y:start_y + cy, start_z:start_z + cz]
+    cropped_mri = mri_array[:, start_x:start_x + cx, start_y:start_y + cy, start_z:start_z + cz]
+    cropped_label = label_array[:, start_x:start_x + cx, start_y:start_y + cy, start_z:start_z + cz]
 
-    return cropped_ct, cropped_mri, cropped_label
+    return cropped_ct.astype(np.float32), cropped_mri.astype(np.float32), cropped_label.astype(np.float32)
 
 # Example usage:
 # cropped_ct, cropped_mri, cropped_label = random_crop_around_lesion(ct_array, mri_array, label_array, lesion_index)

@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "./test.py", line 1, in <module>
+    from Util_Co import coRegis_fix, itk2sitk, sitk2itk
+  File "/home/bruno/3D-Laision-Seg/GenrativeMethod/co_regis/Util_Co.py", line 9, in <module>
+    import SimpleITK as sitk
+ModuleNotFoundError: No module named 'SimpleITK'

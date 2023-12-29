@@ -10,11 +10,16 @@ import json
 import numpy as np
 import torchvision.transforms.functional as TF
 import random
+import torchio as tio
 from Util import random_crop_around_lesion
 random.seed(0)  # You can choose any number as the seed value
 
 class StrokeAI(Dataset):
-    def __init__(self, CT_root, MRI_root, label_root, MRI_type, map_file=None, bounding_box=False, indices=None, transform=None, padding = False, slicing=False, instance_normalize=False, crop = None):
+    def __init__(self, 
+                 CT_root, DWI_root, ADC_root, label_root, MRI_type, 
+                 map_file=None, bounding_box=False, indices=None, 
+                 transform=None, 
+                 padding = False, slicing=False, instance_normalize=False, crop = None, RotatingResize = False):
         """
         CT_root, MRI_root, label_root: The path to CTs, MRIs, segmentation labels.
         indices: Don't know what it is.
@@ -25,7 +30,8 @@ class StrokeAI(Dataset):
         crop: crop to a certain cubic that must contain lesion eg. (56,56,56)
         """
         self.ct_dir = CT_root
-        self.mri_dir = MRI_root
+        self.dwi_dir = DWI_root
+        self.adc_dir = ADC_root
         self.label_dir = label_root
         self.MRI_type = MRI_type
         self.ids = self.get_unique_ids()
@@ -42,6 +48,9 @@ class StrokeAI(Dataset):
         self.instance_normalize = instance_normalize
         self.padding = padding
         self.cropping = crop
+        self.RotatingResize = RotatingResize
+        if self.RotatingResize: 
+            print("Rotation and Resize")
 
         if self.slicing == True:
             print("we convert 3D to 2D images along axiel")
@@ -75,7 +84,9 @@ class StrokeAI(Dataset):
         processed MRI in tensor form
         processed label in tensor form
         '''
-        if self.bounding: # are you sure it match each other?
+
+        # load from sitk and get numpy format
+        if self.bounding:
             target_dim = [156, 192, 162]
             cropped_CT = sitk.RegionOfInterest(ct_sitk, target_dim, start_index)
             cropped_MRI = sitk.RegionOfInterest(mri_sitk, target_dim, start_index)
@@ -90,24 +101,67 @@ class StrokeAI(Dataset):
             mri_array = sitk.GetArrayFromImage(mri_sitk)
             label_array = sitk.GetArrayFromImage(label_sitk)
 
-        if self.padding: # can be replaced by TF built-in function
-            # Find the longest dimension
-            max_dim = max(ct_array.shape)  # Assuming ct_array, mri_array, and label_array have same shape
+        # if self.padding: # can be replaced by TF built-in function
+        #     # Find the longest dimension
+        #     max_dim = max(ct_array.shape)  # Assuming ct_array, mri_array, and label_array have same shape
 
-            # Calculate padding for each dimension
-            padding = [(max_dim - s) for s in ct_array.shape]
+        #     # Calculate padding for each dimension
+        #     padding = [(max_dim - s) for s in ct_array.shape]
 
-            # Apply padding
-            # Note: np.pad requires padding format as [(before_1, after_1), (before_2, after_2), ...]
-            padding_format = [(p // 2, p - p // 2) for p in padding]
-            ct_array = np.pad(ct_array, padding_format, mode='constant', constant_values=0)
-            mri_array = np.pad(mri_array, padding_format, mode='constant', constant_values=0)
-            label_array = np.pad(label_array, padding_format, mode='constant', constant_values=0)
+        #     # Apply padding
+        #     # Note: np.pad requires padding format as [(before_1, after_1), (before_2, after_2), ...]
+        #     padding_format = [(p // 2, p - p // 2) for p in padding]
+        #     ct_array = np.pad(ct_array, padding_format, mode='constant', constant_values=0)
+        #     mri_array = np.pad(mri_array, padding_format, mode='constant', constant_values=0)
+        #     label_array = np.pad(label_array, padding_format, mode='constant', constant_values=0)
 
         if self.slicing:
             ct_array = ct_array[:,:,90:(90+self.slicing_num)] 
             mri_array = mri_array[:,:,90:(90+self.slicing_num)]
             label_array = label_array[:,:,90:(90+self.slicing_num)]
+
+        # add one dim
+        ct_array = np.expand_dims(ct_array, axis=0)
+        mri_array = np.expand_dims(mri_array, axis=0)
+        label_array = np.expand_dims(label_array, axis=0)
+
+        if self.RotatingResize:
+
+            # define Rotation and resize
+            rotation_angles = np.random.uniform(-360, 360, size=3)
+            scaling_factors = np.random.uniform(0.7, 1.3, size=3)
+            image_affine_transformation = tio.Affine(
+                scales=scaling_factors,
+                degrees=rotation_angles,
+                translation = (0, 0, 0),
+                image_interpolation='linear'
+            )
+            label_affine_transformation = tio.Affine(
+                scales=scaling_factors,
+                degrees=rotation_angles,
+                translation = (0, 0, 0),
+                image_interpolation='nearest'
+            )
+            image_transformation_pipeline = tio.Compose([image_affine_transformation])
+            label_transformation_pipeline = tio.Compose([label_affine_transformation])
+
+            # convert array to tio subject
+            ct_image = tio.ScalarImage(tensor=ct_array)
+            mri_image = tio.ScalarImage(tensor=mri_array)
+            label_image = tio.ScalarImage(tensor=label_array)
+            image_subject = tio.Subject(
+                                ct=ct_image,
+                                mri=mri_image,
+                            )
+            label_subject = tio.Subject(label=label_image)
+
+            image_transformed_subject = image_transformation_pipeline(image_subject)
+            label_trnasformed_subject = label_transformation_pipeline(label_subject)
+
+            ct_array = (image_transformed_subject.ct).numpy()
+            mri_array = (image_transformed_subject.mri).numpy()
+            label_array = (label_trnasformed_subject.label).numpy()
+            # 4-dim
 
         if self.cropping: # sometime it does not work and return a all zeros label
             assert self.slicing == False
@@ -119,9 +173,13 @@ class StrokeAI(Dataset):
             else:
                 assert False
         
-            # cropped array
             ct_array, mri_array, label_array = random_crop_around_lesion(ct_array, mri_array, label_array,  random_leision_index, crop_size=(56, 56, 56))
 
+
+        # convert numpy to torch tensor
+        ct_tensor = torch.tensor(ct_array)
+        mri_tensor = torch.tensor(mri_array)
+        label_tensor = torch.tensor(label_array)
 
         # if time permits, add them to preprocess function
         # Normalize if required, One question here: Should I normalize the data? Becuase it seems really dark
@@ -129,25 +187,9 @@ class StrokeAI(Dataset):
             ct_instance_norm = torch.nn.InstanceNorm3d(num_features=1, affine=True)
             mri_instance_norm = torch.nn.InstanceNorm3d(num_features=1, affine=True)
 
-            ct_array = ct_array.astype(np.float32)
-            mri_array = mri_array.astype(np.float32)
-            label_array = label_array.astype(np.float32)
-            ct_tensor = torch.tensor(ct_array).unsqueeze(0)
-            mri_tensor = torch.tensor(mri_array).unsqueeze(0)
-            label_tensor = torch.tensor(label_array).unsqueeze(0)
-
             ct_tensor = ct_instance_norm(ct_tensor).detach()
             mri_tensor = mri_instance_norm(mri_tensor).detach()
             # print("MRI Data After Normalization - Mean:", torch.mean(mri_tensor), "Std Dev:", torch.std(mri_tensor))
-
-        else:
-            ct_array = ct_array.astype(np.float32)
-            mri_array = mri_array.astype(np.float32)
-            label_array = label_array.astype(np.float32)
-
-            ct_tensor = torch.tensor(ct_array).unsqueeze(0)
-            mri_tensor = torch.tensor(mri_array).unsqueeze(0)
-            label_tensor = torch.tensor(label_array).unsqueeze(0)
 
         return ct_tensor, mri_tensor, label_tensor
        
@@ -157,21 +199,22 @@ class StrokeAI(Dataset):
         unique_id = self.ids[idx]
         # mri_id = self.ct_map_mri.get(unique_id)
         
+        # locate CT, MRI, Label
         ct_path = os.path.join(self.ct_dir, f'{unique_id}_ct.nii.gz')
         if self.MRI_type == 'DWI':
-            mri_path = os.path.join(self.mri_dir, f'{unique_id}_DWI_coregis.nii.gz')
+            mri_path = os.path.join(self.dwi_dir, f'{unique_id}_DWI_coregis.nii.gz')
         elif self.MRI_type == 'ADC':
-            mri_id = self.ct_map_mri.get(unique_id)
-            mri_path = os.path.join(self.mri_dir, f'{mri_id}',f'{mri_id}_ADC_MNI.nii.gz')   
+            mri_path = os.path.join(self.adc_dir, f'{unique_id}_ADC_coregis.nii.gz')   
         else:
             assert False
-
         label_path = os.path.join(self.label_dir, f'{unique_id}_label_inskull.nii.gz')
 
+        # read file in sitk format
         ct_sitk = sitk.ReadImage(ct_path)
         mri_sitk = sitk.ReadImage(mri_path)
         label_sitk = sitk.ReadImage(label_path)
 
+        # Preprocess
         ct_tensor, mri_tensor, label_tensor = self.preprocess(ct_sitk, mri_sitk, label_sitk)
 
         sample = {'ct': ct_tensor, 'mri': mri_tensor, 'label': label_tensor}
@@ -198,7 +241,7 @@ def plot_and_save(Transfomred_CT, Transformed_MRI, Transformed_label, save_path)
 
     plt.subplot(133)
     plt.imshow(ct_slice, cmap='gray')
-    plt.title('Skull-Stripped Image')
+    plt.title('CT slice')
 
     # Save the plot to a file
     plt.savefig(save_path)
@@ -232,16 +275,18 @@ def calculate_global_mean_std(dataset):
 def main():
     print("start working")
     train_set = StrokeAI(CT_root="/home/bruno/xfang/dataset/images",
-                       MRI_root="/scratch4/rsteven1/DWI_coregis_20231208",  #DWI
-                    #    MRI_root="/scratch4/rsteven1/examples",  # ADC
+                       DWI_root="/scratch4/rsteven1/DWI_coregis_20231208",  #DWI
+                       ADC_root="/scratch4/rsteven1/ADC_coregis_20231228",  # ADC
                        label_root="/home/bruno/xfang/dataset/labels", 
                        MRI_type = 'ADC',
                        map_file= "/home/bruno/3D-Laision-Seg/GenrativeMethod/efficient_ct_dir_name_to_XNATSessionID_mapping.json",
-                       bounding_box=False,
+                    #    bounding_box=False,
                        instance_normalize=True, 
-                       padding=True, 
+                    #    padding=False, 
                     #    slicing=True,
-                       crop=True)
+                       crop=True,
+                       RotatingResize = True)
+    
     print(f"dataset length is {len(train_set)}")
     print("data loads fine")
 
@@ -279,7 +324,9 @@ def main():
         
         # print(torch.sum(label_batch))
 
-        # plot_and_save(ct_batch[0,0], mri_batch[0,0], label_batch[0,0], "./test.png")
+        plot_and_save(ct_batch[0,0], mri_batch[0,0], label_batch[0,0], "./test.png")
+        import pdb
+        pdb.set_trace()
 
 
 if __name__ == "__main__":
