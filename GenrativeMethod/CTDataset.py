@@ -179,6 +179,7 @@ class StrokeAI(Dataset):
         # convert numpy to torch tensor
         ct_tensor = torch.tensor(ct_array)
         mri_tensor = torch.tensor(mri_array)
+        label_array = label_array.astype(np.float32)
         label_tensor = torch.tensor(label_array)
 
         # if time permits, add them to preprocess function
@@ -284,8 +285,8 @@ def main():
                        instance_normalize=True, 
                     #    padding=False, 
                     #    slicing=True,
-                       crop=True,
-                       RotatingResize = True)
+                       crop=False,
+                       RotatingResize = False)
     
     print(f"dataset length is {len(train_set)}")
     print("data loads fine")
