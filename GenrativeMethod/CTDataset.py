@@ -17,9 +17,10 @@ random.seed(0)  # You can choose any number as the seed value
 class StrokeAI(Dataset):
     def __init__(self, 
                  CT_root, DWI_root, ADC_root, label_root, MRI_type, 
+                 mode = 'train',
                  map_file=None, bounding_box=False, indices=None, 
                  transform=None, 
-                 padding = False, slicing=False, instance_normalize=False, crop = None, RotatingResize = False):
+                 padding = False, slicing=False, instance_normalize=False, crop = False, RotatingResize = False):
         """
         CT_root, MRI_root, label_root: The path to CTs, MRIs, segmentation labels.
         indices: Don't know what it is.
@@ -34,6 +35,7 @@ class StrokeAI(Dataset):
         self.adc_dir = ADC_root
         self.label_dir = label_root
         self.MRI_type = MRI_type
+        self.mode = mode
         self.ids = self.get_unique_ids()
 
         # Due to Rongxi's terrible naming system, I have to do that
@@ -101,26 +103,17 @@ class StrokeAI(Dataset):
             mri_array = sitk.GetArrayFromImage(mri_sitk)
             label_array = sitk.GetArrayFromImage(label_sitk)
 
-        # if self.padding: # can be replaced by TF built-in function
-        #     # Find the longest dimension
-        #     max_dim = max(ct_array.shape)  # Assuming ct_array, mri_array, and label_array have same shape
-
-        #     # Calculate padding for each dimension
-        #     padding = [(max_dim - s) for s in ct_array.shape]
-
-        #     # Apply padding
-        #     # Note: np.pad requires padding format as [(before_1, after_1), (before_2, after_2), ...]
-        #     padding_format = [(p // 2, p - p // 2) for p in padding]
-        #     ct_array = np.pad(ct_array, padding_format, mode='constant', constant_values=0)
-        #     mri_array = np.pad(mri_array, padding_format, mode='constant', constant_values=0)
-        #     label_array = np.pad(label_array, padding_format, mode='constant', constant_values=0)
+        if self.padding:
+            ct_array = ct_array[:-1,:-1,:-1]
+            mri_array = mri_array[:-1,:-1,:-1]
+            label_array = label_array[:-1,:-1,:-1]
 
         if self.slicing:
             ct_array = ct_array[:,:,90:(90+self.slicing_num)] 
             mri_array = mri_array[:,:,90:(90+self.slicing_num)]
             label_array = label_array[:,:,90:(90+self.slicing_num)]
 
-        # add one dim
+        # add one dim as channel
         ct_array = np.expand_dims(ct_array, axis=0)
         mri_array = np.expand_dims(mri_array, axis=0)
         label_array = np.expand_dims(label_array, axis=0)
@@ -128,8 +121,8 @@ class StrokeAI(Dataset):
         if self.RotatingResize:
 
             # define Rotation and resize
-            rotation_angles = np.random.uniform(-360, 360, size=3)
-            scaling_factors = np.random.uniform(0.7, 1.3, size=3)
+            rotation_angles = np.random.uniform(-8, 8, size=3)
+            scaling_factors = np.random.uniform(0.8, 1.2, size=3)
             image_affine_transformation = tio.Affine(
                 scales=scaling_factors,
                 degrees=rotation_angles,
@@ -216,7 +209,22 @@ class StrokeAI(Dataset):
         label_sitk = sitk.ReadImage(label_path)
 
         # Preprocess
-        ct_tensor, mri_tensor, label_tensor = self.preprocess(ct_sitk, mri_sitk, label_sitk)
+        if self.mode == 'train':
+            ct_tensor, mri_tensor, label_tensor = self.preprocess(ct_sitk, mri_sitk, label_sitk)
+
+        if self.mode == 'test':
+            ct_np = sitk.GetArrayFromImage(ct_sitk)
+            mri_np = sitk.GetArrayFromImage(mri_sitk)
+            label_np = sitk.GetArrayFromImage(label_sitk).astype(np.int32)
+
+            # Convert NumPy arrays to PyTorch tensors
+            ct_tensor = torch.from_numpy(ct_np).float()
+            mri_tensor = torch.from_numpy(mri_np).float()
+            label_tensor = torch.from_numpy(label_np).float()
+
+            ct_tensor = ct_tensor.unsqueeze(0)  # Add a batch dimension
+            mri_tensor = mri_tensor.unsqueeze(0)
+            label_tensor = label_tensor.unsqueeze(0)
 
         sample = {'ct': ct_tensor, 'mri': mri_tensor, 'label': label_tensor}
         return sample
@@ -280,6 +288,7 @@ def main():
                        ADC_root="/scratch4/rsteven1/ADC_coregis_20231228",  # ADC
                        label_root="/home/bruno/xfang/dataset/labels", 
                        MRI_type = 'ADC',
+                       mode = 'test',
                        map_file= "/home/bruno/3D-Laision-Seg/GenrativeMethod/efficient_ct_dir_name_to_XNATSessionID_mapping.json",
                     #    bounding_box=False,
                        instance_normalize=True, 
@@ -307,6 +316,9 @@ def main():
         ct_batch = batch['ct']
         mri_batch = batch['mri']
         label_batch = batch['label']
+
+        import pdb
+        pdb.set_trace()
 
         # Calculate the mean and standard deviation of the batch
         ct_mean = ct_batch.mean()
