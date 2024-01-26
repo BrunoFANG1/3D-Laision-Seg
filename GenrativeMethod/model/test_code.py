@@ -68,15 +68,10 @@ def main(rank, world_size):
     args_dict = vars(args)
 
     # Training Parameters
-    gradient_accumulation_steps = args.gradient_accumulation_steps
-    batch_size= args.batch_size
+    batch_size= 1
     learning_rate = args.learning_rate
-    epochs = args.epochs
-    current_time = datetime.datetime.now()
-    timestamp = current_time.strftime("%Y%m%d_%H%M")
+   
 
-    # Dataset Parameters
-    # construct train dataset and test dataset
     train_dataset =  StrokeAI(CT_root="/home/bruno/xfang/dataset/images",
                        DWI_root="/scratch4/rsteven1/DWI_coregis_20231208",  #DWI
                        ADC_root="/scratch4/rsteven1/ADC_coregis_20231228",  # ADC
@@ -116,6 +111,9 @@ def main(rank, world_size):
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False, sampler=train_sampler, num_workers=3)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, sampler=test_sampler, num_workers=3)
 
+    print(f"Number of batches in train_loader: {len(train_loader)}")
+    print(f"Number of batches in test_loader: {len(test_loader)}")
+
     # Model initialization
     if args.model_name == '3D_Unet':
         model = UNet3D(in_channels=1, out_channels=1, final_sigmoid=True).to(rank)
@@ -132,111 +130,39 @@ def main(rank, world_size):
     print(f"Number of parameters: {num_parameters}")
 
     model = DDP(model.to(rank), device_ids=[rank])
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, betas=(0.5, 0.999))
 
     if args.resuming:
         checkpoint = torch.load(args.checkpoint_path, map_location=lambda storage, loc: storage.cuda(rank))
         model.load_state_dict(checkpoint['model_state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         print("Load saved model and optimizer")
 
 
     # loss and optimizer selection
     loss = DiceLoss(normalization='none')
-    best_test_loss = 100
     # adversarial_loss =torch.nn.CrossEntropyLoss()
 
-    if rank == 0 and args.wandb:
-        wandb.init(
-            # set the wandb project where this run will be logged
-            project="StrokeAI",
 
-            name=f'{timestamp}_{args.model_name}',
-            
-            # track hyperparameters and run metadata
-            config = args_dict
-        )
+    model.eval()
+    total_test_loss = 0
+    test_samples = 0
+    with torch.no_grad():
+        for batch_idx, sample in enumerate(test_loader):
+            print(batch_idx)
+            if args.crop:
+                pred = sliding_window_inference(sample['ct'].to(rank), [56, 56, 56], 30, model)
+            else:
+                pred = model(sample['ct'].to(rank))
 
-    print("start training")
-    for epoch in range(epochs):
-    
-        if rank == 0 and args.wandb:
-            print(f"The current epoch is {epoch}")
-            wandb.log({"epoch": epoch})
+            # add Rongxi and Joe's evaluation
+            pred = pred > (pred.max() + pred.min())/2
 
-
-        # Training loop
-        model.train()
-        total_train_loss = 0
-        train_samples = 0
-        # optimizer.zero_grad()
-
-        for batch_idx, sample in enumerate(train_loader):
-
-            # image = sample['ct'].to(rank)
-            # label = sample['label'].to(rank)
-            # x_start = label
-            # x_start = (x_start) * 2 -1
-            # x_t, t, noise = model(x=x_start, pred_type="q_sample")
-            # pred_xstart = model(x=x_t, step=t, image=image, pred_type="denoise")
-            # pred = torch.sigmoid(pred_xstart)
-
-            # regular training
-            pred = model(sample['ct'].to(rank))
             label = sample['label'].to(rank)
-            pred = model(sample['ct'].to(rank))
-            label = sample['label'].to(rank)
+            loss_ = loss(pred, label)
+            total_test_loss += loss_.item()
+            print(loss_)
 
-            loss_ = loss(pred, label) / gradient_accumulation_steps
-            loss_.backward()
-            total_train_loss += loss_.item() * sample['ct'].size(0) * gradient_accumulation_steps
-            train_samples += sample['ct'].size(0)
+    print(f"final test loss is {total_test_loss/len(test_dataset)}")
 
-            if (batch_idx + 1) % gradient_accumulation_steps == 0 or (batch_idx + 1) == len(train_loader):
-                optimizer.step()
-                optimizer.zero_grad()
-
-        avg_train_loss = reduce_loss(total_train_loss / train_samples, rank, world_size)
-        if rank == 0 and args.wandb:
-            print(f"Average Training Loss for Epoch {epoch}: {avg_train_loss}")
-            wandb.log({"epoch": epoch, "average_train_loss": avg_train_loss})
-
-        # Testing loop
-        model.eval()
-        total_test_loss = 0
-        test_samples = 0
-        with torch.no_grad():
-            for batch_idx, sample in enumerate(test_loader):
-
-                if args.crop:
-                    pred = sliding_window_inference(sample['ct'].to(rank), [56, 56, 56], args.batch_size, model)
-                else:
-                    pred = model(sample['ct'].to(rank))
-
-                # add Rongxi and Joe's evaluation
-                pred = pred > (pred.max() + pred.min())/2
-
-                label = sample['label'].to(rank)
-                loss_ = loss(pred, label)
-                total_test_loss += loss_.item() * sample['ct'].size(0)
-                test_samples += sample['ct'].size(0)
-
-
-        # Save the model checkpoint with lowest test loss
-        if rank == 0 and best_test_loss >= (total_test_loss / test_samples): # previous test loss is larger than this epoch
-            best_test_loss = total_test_loss / test_samples
-            PATH = f'/home/bruno/3D-Laision-Seg/GenrativeMethod/model/model_checkpoint/{args.model_name}_{epochs}_epoch_{timestamp}.pth'
-            checkpoint = {
-                'model_state_dict': model.state_dict(),
-                'optimizer_state_dict': optimizer.state_dict()
-            }
-            print(f"save model at {PATH} at epoch {epoch}")
-            torch.save(checkpoint, PATH)
-
-        avg_test_loss = total_test_loss / test_samples
-        if rank == 0 and args.wandb:
-            print(f"Average Test Loss for Epoch {epoch}: {avg_test_loss}")
-            wandb.log({"epoch": epoch, "average_test_loss": avg_test_loss})
 
     cleanup()
 

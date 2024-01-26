@@ -12,7 +12,7 @@ import torchvision.transforms.functional as TF
 import random
 import torchio as tio
 from Util import random_crop_around_lesion
-random.seed(0)  # You can choose any number as the seed value
+ # You can choose any number as the seed value
 
 class StrokeAI(Dataset):
     def __init__(self, 
@@ -20,7 +20,7 @@ class StrokeAI(Dataset):
                  mode = 'train',
                  map_file=None, bounding_box=False, indices=None, 
                  transform=None, 
-                 padding = False, slicing=False, instance_normalize=False, crop = False, RotatingResize = False):
+                 padding = False, slicing=False, instance_normalize=False, crop = False, random_crop_ratio=0.0, RotatingResize = False):
         """
         CT_root, MRI_root, label_root: The path to CTs, MRIs, segmentation labels.
         indices: Don't know what it is.
@@ -30,13 +30,14 @@ class StrokeAI(Dataset):
         normalize: preprocessing, make the dataset zero mean and unit variance.
         crop: crop to a certain cubic that must contain lesion eg. (56,56,56)
         """
+        random.seed(42)
         self.ct_dir = CT_root
         self.dwi_dir = DWI_root
         self.adc_dir = ADC_root
         self.label_dir = label_root
         self.MRI_type = MRI_type
         self.mode = mode
-        self.ids = self.get_unique_ids()
+        self.train_ids, self.test_ids = self.get_unique_ids()
 
         # Due to Rongxi's terrible naming system, I have to do that
         if map_file is not None:
@@ -50,19 +51,14 @@ class StrokeAI(Dataset):
         self.instance_normalize = instance_normalize
         self.padding = padding
         self.cropping = crop
+        self.random_crop_ratio = random_crop_ratio
         self.RotatingResize = RotatingResize
-        if self.RotatingResize: 
-            print("Rotation and Resize")
-
-        if self.slicing == True:
-            print("we convert 3D to 2D images along axiel")
-            self.slicing_num = 16
-            print("The output size is (190, 190, 16)")
 
     def get_unique_ids(self):
         # Extract unique IDs from the CT directory
         ids =  ['_'.join(filename.split('_')[:2]) for filename in os.listdir(self.ct_dir)]
-        return list(set(ids))
+        split_index = int(0.8 * len(ids))
+        return list(set(ids[:split_index])), list(set(ids[split_index:]))
     
     def load_sitk_file(self, file_path):
         # Load a file using SimpleITK
@@ -70,7 +66,13 @@ class StrokeAI(Dataset):
         return sitk.GetArrayFromImage(image)
 
     def __len__(self):
-        return len(self.ids)
+
+        if self.mode =='train':
+            return len(self.train_ids)
+        elif self.mode =='test':
+            return len(self.test_ids)
+        else:
+            assert False
    
     def preprocess(self, ct_sitk, mri_sitk, label_sitk):
         '''
@@ -166,7 +168,7 @@ class StrokeAI(Dataset):
             else:
                 assert False
         
-            ct_array, mri_array, label_array = random_crop_around_lesion(ct_array, mri_array, label_array,  random_leision_index, crop_size=(56, 56, 56))
+            ct_array, mri_array, label_array = random_crop_around_lesion(ct_array, mri_array, label_array,  random_leision_index, crop_size=(56, 56, 56), random_crop_prob = self.random_crop_ratio)
 
 
         # convert numpy to torch tensor
@@ -190,7 +192,10 @@ class StrokeAI(Dataset):
 
     def __getitem__(self, idx):
         # read ct, mri, label and add a channel dimension
-        unique_id = self.ids[idx]
+        if self.mode == 'train':
+            unique_id = self.train_ids[idx]
+        if self.mode == 'test':
+            unique_id = self.test_ids[idx]
         # mri_id = self.ct_map_mri.get(unique_id)
         
         # locate CT, MRI, Label
