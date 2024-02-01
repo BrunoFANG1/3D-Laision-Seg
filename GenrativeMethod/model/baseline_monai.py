@@ -26,7 +26,6 @@ from torch.utils.data.distributed import DistributedSampler
 from CTDataset import StrokeAI
 from model.pytorch3dunet.unet3d.model import UNet3D, ResidualUNet3D
 from model.pytorch3dunet.unet3d.losses import DiceLoss
-from model.SwinUnet3D.SwinUnet_3DV2 import SwinUnet3D
 
 import os
 import sys
@@ -92,8 +91,8 @@ def main(rank, world_size):
     if args.rand_affine:
         train_transform_list.append(RandAffined(keys=['ct', 'label'], 
                                                 # rotate_range=(360, 360, 360),
-                                                scale_range=(0.9, 1.1), 
-                                                translate_range=(5, 5, 5),
+                                                # scale_range=(0.9, 1.1), 
+                                                # translate_range=(5, 5, 5),
                                                 mode=('bilinear', 'nearest'), 
                                                 prob=1.0,
                                                 padding_mode='border'))
@@ -143,22 +142,34 @@ def main(rank, world_size):
     if args.model_name == '3D_Unet':
         model = UNet3D(in_channels=1, out_channels=1, final_sigmoid=True).to(rank)
     elif args.model_name == 'Att_Unet':
-        model = Att_Unet()
-    elif args.model_name == 'Swin_Unet':
-        model = SwinUnet3D(hidden_dim=96, layers=(2, 2, 6, 2), heads=(3, 6, 9, 12), num_classes=1, window_size=3)
+        model = monai.networks.nets.AttentionUnet(
+        spatial_dims = 3,
+        in_channels = 1,
+        out_channels = 1,
+        channels = [16, 32, 64, 128],
+        strides = [2,2,2,2],
+        kernel_size = 3,
+        up_kernel_size = 3,
+        dropout = 0.0,
+        )
+    elif args.model_name == 'Swin_UnetR':
+        model = monai.networks.nets.SwinUNETR(img_size=(128,128,128), in_channels=1, out_channels=1, feature_size=48)
+    
     elif args.model_name == 'Diff_Unet':
         model = DiffUNet()
 
     else:
         assert False
 
+    scaler = torch.cuda.amp.GradScaler()
     num_parameters = sum(p.numel() for p in model.parameters())
     print(f"Number of parameters: {num_parameters}")
     model = DDP(model.to(rank), device_ids=[rank])
 
 
     # loss and optimizer selection
-    loss = DiceLoss(normalization='none')
+    train_loss = monai.losses.GeneralizedDiceFocalLoss(sigmoid=True)
+    test_loss = monai.losses.DiceLoss()
     # adversarial_loss =torch.nn.CrossEntropyLoss()
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, betas=(0.5, 0.999))
@@ -193,26 +204,20 @@ def main(rank, world_size):
 
         for batch_idx, sample in enumerate(train_loader):
 
-            image = sample['ct'].to(rank)
-            label = sample['label'].to(rank)
-            x_start = label
-            x_start = (x_start) * 2 -1
-            x_t, t, noise = model(x=x_start, pred_type="q_sample")
-            pred_xstart = model(x=x_t, step=t, image=image, pred_type="denoise")
-            pred = torch.sigmoid(pred_xstart)
-
             # regular training
-            # pred = model(sample['ct'].to(rank))
-            # label = sample['label'].to(rank)
-
-            loss_ = loss(pred, label) / gradient_accumulation_steps
-            loss_.backward()
+            label = sample['label'].to(rank)
+            optimizer.zero_grad()
+            with torch.cuda.amp.autocast():
+                pred = model(sample['ct'].to(rank))
+                loss_ = train_loss(pred, label) / gradient_accumulation_steps
+            
+            scaler.scale(loss_).backward()
             total_train_loss += loss_.item() * sample['ct'].size(0) * gradient_accumulation_steps
             train_samples += sample['ct'].size(0)
 
             if (batch_idx + 1) % gradient_accumulation_steps == 0 or (batch_idx + 1) == len(train_loader):
-                optimizer.step()
-                optimizer.zero_grad()
+                scaler.step(optimizer)
+                scaler.update()
 
 
         avg_train_loss = reduce_loss(total_train_loss / train_samples, rank, world_size)
@@ -228,21 +233,16 @@ def main(rank, world_size):
             for batch_idx, sample in enumerate(test_loader):
 
                 if args.rand_spatial_crop == True:
-                    if args.model_name == 'Diff_Unet':
-                        window_infer = SlidingWindowInferer(roi_size=args.crop_size,
-                                        sw_batch_size=1,
-                                        overlap=0.5)
-                        pred = window_infer(sample['ct'].to(rank) ,model, pred_type="ddim_sample")
-                    else:
-                        pred = sliding_window_inference(sample['ct'].to(rank), args.crop_size, 20, model)
+                    pred = sliding_window_inference(sample['ct'].to(rank), args.crop_size, 20, model)
                 else:
                     pred = model(sample['ct'].to(rank))
 
                 # add Rongxi and Joe's evaluation
+                pred = torch.sigmoid(pred)
                 pred = pred > (pred.max() + pred.min())/2
 
                 label = sample['label'].to(rank)
-                loss_ = loss(pred, label)
+                loss_ = test_loss(pred, label)
                 total_test_loss += loss_.item() * sample['ct'].size(0)
                 test_samples += sample['ct'].size(0)
 
@@ -298,7 +298,7 @@ def parse_args():
 
 
     # Training Parameters
-    parser.add_argument('--learning_rate', type=float, default=1e-5, help='Learning rate for the optimizer')
+    parser.add_argument('--learning_rate', type=float, default=1e-4, help='Learning rate for the optimizer')
     parser.add_argument('--epochs', type=int, default=100, help='Number of training epochs')
     parser.add_argument('--batch_size', type=int, default=2, help='Batch size for training and testing')
     parser.add_argument('--gradient_accumulation_steps', type=int, default=1, help='Number of gradient accumulation steps')
