@@ -6,15 +6,11 @@ from torch.utils.data import Subset
 import numpy as np
 import itertools
 import sys
-from AttenUnet.AttenUnet_4M import Att_Unet
-sys.path.append('../')
+import os
+import sys
 from sklearn.model_selection import train_test_split
 import monai
-from monai.transforms import (
-    Compose, LoadImaged, AddChanneld, ScaleIntensityd, 
-    SpatialPadd, RandSpatialCropd, RandAffined, ToTensord,
-    RandRotated, RandZoomd
-)
+
 from monai.data import Dataset, DataLoader
 from monai.inferers import sliding_window_inference, SlidingWindowInferer
 
@@ -23,16 +19,9 @@ import torch.multiprocessing as mp
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
-from CTDataset import StrokeAI
-from model.pytorch3dunet.unet3d.model import UNet3D, ResidualUNet3D
-from model.pytorch3dunet.unet3d.losses import DiceLoss
 
-import os
-import sys
 
-sys.path.append('./Diff_UNet/')
-sys.path.append('./Diff_UNet/BraTS2020')
-from BraTS2020.train import DiffUNet
+from Util import train_test_transform, model_selection
 
 
 
@@ -66,7 +55,7 @@ def main(rank, world_size):
 
     setup(rank, world_size)
     args = parse_args()
-    print(args)
+
     args_dict = vars(args)
 
     # Training Parameters
@@ -75,104 +64,48 @@ def main(rank, world_size):
     learning_rate = args.learning_rate
     epochs = args.epochs
 
-    # Dataset Parameters
-
-    # create train set transformation
-    train_transform_list = [
-        LoadImaged(keys=['ct', 'label']),
-        AddChanneld(keys=['ct', 'label'])
-    ]
-    if args.scale_intensity:
-        train_transform_list.append(ScaleIntensityd(keys=['ct']))
-    if args.spatial_pad:
-        original_shape = [189, 233, 197]
-        assert sum([l>=r for l, r in zip(args.padding_size, original_shape)]) == 3, "Padding size must be greater than the original shape in all dimensions."
-        train_transform_list.append(SpatialPadd(keys=['ct', 'label'], spatial_size=[224, 224, 224], mode='edge'))
-    if args.rand_affine:
-        train_transform_list.append(RandAffined(keys=['ct', 'label'], 
-                                                # rotate_range=(360, 360, 360),
-                                                # scale_range=(0.9, 1.1), 
-                                                # translate_range=(5, 5, 5),
-                                                mode=('bilinear', 'nearest'), 
-                                                prob=1.0,
-                                                padding_mode='border'))
-    if args.rand_spatial_crop:
-        train_transform_list.append(RandSpatialCropd(keys=["ct", "label"], roi_size=args.crop_size, random_size=False))
-    if args.to_tensor: # default is true
-        train_transform_list.append(ToTensord(keys=['ct', 'label']))
-    train_transforms = Compose(train_transform_list)
-
-    # create test set transformation
-    test_transforms = Compose([
-        LoadImaged(keys=['ct', 'label']),
-        AddChanneld(keys=['ct', 'label']),
-        # ScaleIntensityd(keys=['ct']),
-        ToTensord(keys=['ct', 'label'])
-    ])
-
-    # Split train and test set
-    # Directory paths
+    ################# Dataset ###################
+    train_transforms, test_transforms = train_test_transform(args)
     ct_dir = "/home/bruno/xfang/dataset/images/"
     label_dir = "/home/bruno/xfang/dataset/labels/"
-
-    # Pair each CT image with its corresponding label
     ct_img_label_pairs = [
         (os.path.join(ct_dir, f), 
         os.path.join(label_dir, f.replace('ct.nii.gz', 'label_inskull.nii.gz')))
         for f in os.listdir(ct_dir) if f.endswith('.nii.gz')
     ]
-
-    # Split the pairs into training and testing sets
-    train_pairs, test_pairs = train_test_split(ct_img_label_pairs, test_size=0.2)
-
-    # Create data dictionaries
+    train_pairs, test_pairs = train_test_split(ct_img_label_pairs, test_size=0.2, random_state=42)
     train_data_dicts = [{'ct': ct, 'label': label} for ct, label in train_pairs]
     test_data_dicts = [{'ct': ct, 'label': label} for ct, label in test_pairs]
-
-    # Build dataset for distributed GPUs
     train_dataset = Dataset(data=train_data_dicts, transform=train_transforms)
     test_dataset = Dataset(data=test_data_dicts, transform=test_transforms)
-
     train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank) 
     test_sampler = DistributedSampler(test_dataset, num_replicas=world_size, rank=rank)
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False, sampler=train_sampler)
     test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False, sampler=test_sampler)
 
-    # Model initialization
-    if args.model_name == '3D_Unet':
-        model = UNet3D(in_channels=1, out_channels=1, final_sigmoid=True).to(rank)
-    elif args.model_name == 'Att_Unet':
-        model = monai.networks.nets.AttentionUnet(
-        spatial_dims = 3,
-        in_channels = 1,
-        out_channels = 1,
-        channels = [16, 32, 64, 128],
-        strides = [2,2,2,2],
-        kernel_size = 3,
-        up_kernel_size = 3,
-        dropout = 0.0,
-        )
-    elif args.model_name == 'Swin_UnetR':
-        model = monai.networks.nets.SwinUNETR(img_size=(128,128,128), in_channels=1, out_channels=1, feature_size=48)
-    
-    elif args.model_name == 'Diff_Unet':
-        model = DiffUNet()
-
-    else:
-        assert False
-
-    scaler = torch.cuda.amp.GradScaler()
+    ################ Model initialization ##################
+    model = model_selection(args)
+    scaler = torch.cuda.amp.GradScaler()    # Will that affect model accuracy?
     num_parameters = sum(p.numel() for p in model.parameters())
     print(f"Number of parameters: {num_parameters}")
     model = DDP(model.to(rank), device_ids=[rank])
 
 
-    # loss and optimizer selection
+    ############### Loss and Optimizer   ###################
     train_loss = monai.losses.GeneralizedDiceFocalLoss(sigmoid=True)
     test_loss = monai.losses.DiceLoss()
-    # adversarial_loss =torch.nn.CrossEntropyLoss()
+    # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, betas=(0.5, 0.999))
+    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.01, amsgrad=False)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=1000, eta_min=0, last_epoch=-1, verbose=False)
 
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, betas=(0.5, 0.999))
+    ################ Resuming ####################
+    if args.resuming:
+        checkpoint = torch.load(args.checkpoint_path, map_location=lambda storage, loc: storage.cuda(rank))
+        model.load_state_dict(checkpoint['model_state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        # best_test_loss = checkpoint['loss']
+        print("Load saved model and optimizer")
+
 
     # log all info and parameters
     if rank == 0 and args.wandb:
@@ -197,6 +130,7 @@ def main(rank, world_size):
 
         # Training loop
         model.train()
+        # model.deep_supervision = True # only for Unet++
         total_train_loss = 0.0
         train_samples = 0
         optimizer.zero_grad()
@@ -210,7 +144,8 @@ def main(rank, world_size):
             with torch.cuda.amp.autocast():
                 pred = model(sample['ct'].to(rank))
                 loss_ = train_loss(pred, label) / gradient_accumulation_steps
-            
+                # loss_ = (train_loss(pred[0], label) + train_loss(pred[1], label) + train_loss(pred[2], label) + train_loss(pred[3], label)) / gradient_accumulation_steps
+
             scaler.scale(loss_).backward()
             total_train_loss += loss_.item() * sample['ct'].size(0) * gradient_accumulation_steps
             train_samples += sample['ct'].size(0)
@@ -218,7 +153,7 @@ def main(rank, world_size):
             if (batch_idx + 1) % gradient_accumulation_steps == 0 or (batch_idx + 1) == len(train_loader):
                 scaler.step(optimizer)
                 scaler.update()
-
+        scheduler.step()
 
         avg_train_loss = reduce_loss(total_train_loss / train_samples, rank, world_size)
         if rank == 0 and args.wandb:
@@ -227,6 +162,7 @@ def main(rank, world_size):
 
         # Testing loop
         model.eval()
+        model.deep_supervision = False
         total_test_loss = 0
         test_samples = 0
         with torch.no_grad():
@@ -238,8 +174,9 @@ def main(rank, world_size):
                     pred = model(sample['ct'].to(rank))
 
                 # add Rongxi and Joe's evaluation
+                # pred = torch.sigmoid(pred[-1])      ###Unet++
                 pred = torch.sigmoid(pred)
-                pred = pred > (pred.max() + pred.min())/2
+                pred = pred > 0.5
 
                 label = sample['label'].to(rank)
                 loss_ = test_loss(pred, label)
@@ -299,10 +236,12 @@ def parse_args():
 
     # Training Parameters
     parser.add_argument('--learning_rate', type=float, default=1e-4, help='Learning rate for the optimizer')
-    parser.add_argument('--epochs', type=int, default=100, help='Number of training epochs')
-    parser.add_argument('--batch_size', type=int, default=2, help='Batch size for training and testing')
+    parser.add_argument('--epochs', type=int, default=1000, help='Number of training epochs')
+    parser.add_argument('--batch_size', type=int, default=1, help='Batch size for training and testing')
     parser.add_argument('--gradient_accumulation_steps', type=int, default=1, help='Number of gradient accumulation steps')
 
     # Add more arguments as needed
+    parser.add_argument('--resuming', action='store_true', help='Continue trianing from previous checkpoint')
+    parser.add_argument('--checkpoint_path', type=str, default=None, help='Path for model checkpoint')
 
     return parser.parse_args()
