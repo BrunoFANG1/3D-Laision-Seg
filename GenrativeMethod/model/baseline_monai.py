@@ -4,8 +4,7 @@ import argparse
 import random
 from torch.utils.data import Subset
 import numpy as np
-import itertools
-import sys
+import datetime
 import os
 import sys
 from sklearn.model_selection import train_test_split
@@ -55,7 +54,8 @@ def main(rank, world_size):
 
     setup(rank, world_size)
     args = parse_args()
-
+    current_time = datetime.datetime.now()
+    timestamp = current_time.strftime("%Y%m%d_%H%M")
     args_dict = vars(args)
 
     # Training Parameters
@@ -94,9 +94,9 @@ def main(rank, world_size):
     ############### Loss and Optimizer   ###################
     train_loss = monai.losses.GeneralizedDiceFocalLoss(sigmoid=True)
     test_loss = monai.losses.DiceLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, betas=(0.5, 0.999))
-    # optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.01, amsgrad=False)
-    # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=1000, eta_min=0, last_epoch=-1, verbose=False)
+    # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, betas=(0.5, 0.999))
+    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.01, amsgrad=False)
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=1000, eta_min=0, last_epoch=-1, verbose=False)
 
     ################ Resuming ####################
     if args.resuming:
@@ -155,7 +155,7 @@ def main(rank, world_size):
                 scaler.step(optimizer)
                 scaler.update()
                 # optimizer.step()
-        # scheduler.step()
+        scheduler.step()
 
         avg_train_loss = reduce_loss(total_train_loss / train_samples, rank, world_size)
         if rank == 0 and args.wandb:
@@ -187,7 +187,7 @@ def main(rank, world_size):
 
         # Save the model checkpoint with lowest test loss
         if rank == 0 and avg_test_loss <= total_test_loss / test_samples:
-            PATH = f'/home/bruno/3D-Laision-Seg/GenrativeMethod/model/model_checkpoint/{args.model_name}_{epochs}_epoch.pth'
+            PATH = f'/home/bruno/3D-Laision-Seg/GenrativeMethod/model/model_checkpoint/{args.model_name}_{epochs}_epoch_{timestamp}.pth'
             checkpoint = {
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict()
