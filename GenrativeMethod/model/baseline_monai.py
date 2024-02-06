@@ -94,9 +94,9 @@ def main(rank, world_size):
     ############### Loss and Optimizer   ###################
     train_loss = monai.losses.GeneralizedDiceFocalLoss(sigmoid=True)
     test_loss = monai.losses.DiceLoss()
-    # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, betas=(0.5, 0.999))
-    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.01, amsgrad=False)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=1000, eta_min=0, last_epoch=-1, verbose=False)
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, betas=(0.5, 0.999))
+    # optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.01, amsgrad=False)
+    # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=1000, eta_min=0, last_epoch=-1, verbose=False)
 
     ################ Resuming ####################
     if args.resuming:
@@ -147,13 +147,15 @@ def main(rank, world_size):
                 # loss_ = (train_loss(pred[0], label) + train_loss(pred[1], label) + train_loss(pred[2], label) + train_loss(pred[3], label)) / gradient_accumulation_steps
 
             scaler.scale(loss_).backward()
+            # loss_.backward()
             total_train_loss += loss_.item() * sample['ct'].size(0) * gradient_accumulation_steps
             train_samples += sample['ct'].size(0)
 
             if (batch_idx + 1) % gradient_accumulation_steps == 0 or (batch_idx + 1) == len(train_loader):
                 scaler.step(optimizer)
                 scaler.update()
-        scheduler.step()
+                # optimizer.step()
+        # scheduler.step()
 
         avg_train_loss = reduce_loss(total_train_loss / train_samples, rank, world_size)
         if rank == 0 and args.wandb:
@@ -162,21 +164,21 @@ def main(rank, world_size):
 
         # Testing loop
         model.eval()
-        model.deep_supervision = False
+        # model.deep_supervision = False
         total_test_loss = 0
         test_samples = 0
         with torch.no_grad():
             for batch_idx, sample in enumerate(test_loader):
 
                 if args.rand_spatial_crop == True:
-                    pred = sliding_window_inference(sample['ct'].to(rank), args.crop_size, 20, model)
+                    pred = sliding_window_inference(sample['ct'].to(rank), args.crop_size, 60, model)
                 else:
                     pred = model(sample['ct'].to(rank))
 
                 # add Rongxi and Joe's evaluation
                 # pred = torch.sigmoid(pred[-1])      ###Unet++
                 pred = torch.sigmoid(pred)
-                pred = pred > 0.5
+                pred = pred > (pred.max() + pred.min())/2
 
                 label = sample['label'].to(rank)
                 loss_ = test_loss(pred, label)
@@ -228,6 +230,7 @@ def parse_args():
     parser.add_argument('--scale_intensity', action='store_true', help='Apply ScaleIntensityd transform')
     parser.add_argument('--spatial_pad', action='store_true', help='Apply SpatialPadd transform')
     parser.add_argument('--padding_size', nargs=3, type=int, default=[224, 224, 224], help='Padding size')
+    parser.add_argument('--flip', action='store_true',help='Flip along x,y,z')
     parser.add_argument('--rand_spatial_crop', action='store_true',help='Apply RandSpatialCropd transform')
     parser.add_argument('--crop_size', nargs=3, type=int, default=[96, 96, 96], help='Spatial size for RandSpatialCropd')
     parser.add_argument('--rand_affine', action='store_true', help='Apply RandAffined transform')
@@ -235,7 +238,7 @@ def parse_args():
 
 
     # Training Parameters
-    parser.add_argument('--learning_rate', type=float, default=1e-4, help='Learning rate for the optimizer')
+    parser.add_argument('--learning_rate', type=float, default=1e-5, help='Learning rate for the optimizer')
     parser.add_argument('--epochs', type=int, default=1000, help='Number of training epochs')
     parser.add_argument('--batch_size', type=int, default=1, help='Batch size for training and testing')
     parser.add_argument('--gradient_accumulation_steps', type=int, default=1, help='Number of gradient accumulation steps')
