@@ -5,6 +5,13 @@ from monai.transforms import (
     RandRotated, RandZoomd, RandFlipd
 )
 
+import torch
+import numpy as np
+from scipy.ndimage import label
+from numba import jit
+
+
+
 def train_test_transform(args):
 
     # create train set transformation
@@ -20,7 +27,7 @@ def train_test_transform(args):
         train_transform_list.append(SpatialPadd(keys=['ct', 'label'], spatial_size=[224, 224, 224], mode='edge'))
     if args.rand_affine:
         train_transform_list.append(RandAffined(keys=['ct', 'label'], 
-                                                # rotate_range=(360, 360, 360),
+                                                rotate_range=(360, 360, 360),
                                                 scale_range=(0.8, 1.2), 
                                                 # translate_range=(5, 5, 5),
                                                 mode=('bilinear', 'nearest'), 
@@ -53,7 +60,7 @@ def model_selection(args):
         return None
     elif args.model_name == 'Att_Unet':
         print('We are using Attention Unet model')
-        return monai.networks.nets.AttentionUnet(
+        model = monai.networks.nets.AttentionUnet(
         spatial_dims = 3,
         in_channels = 1,
         out_channels = 1,
@@ -63,16 +70,71 @@ def model_selection(args):
         up_kernel_size = 3,
         dropout = 0.0,
         )
+        return model
+
     elif args.model_name == 'Swin_UnetR':
         print('we are using Swin_UnetR model')
-        return monai.networks.nets.SwinUNETR(img_size=(128, 128,128), in_channels=1, out_channels=1, feature_size=24)
+        model = monai.networks.nets.SwinUNETR(img_size=(128, 128,128), in_channels=1, out_channels=1, feature_size=24)
+        return model
     
     elif args.model_name == 'Unet++':
         print('we are using Unet++ model')
-        return monai.networks.nets.BasicUNetPlusPlus(spatial_dims = 3, 
+        model = monai.networks.nets.BasicUNetPlusPlus(spatial_dims = 3, 
                               out_channels = 1,
                               features=(32, 32, 64, 128, 256, 32),
                               deep_supervision = True
                               )
+        return model
     else:
         assert False
+
+
+def remove_small_lesions_5d_tensor(binary_label_5d_tensor, min_size=25):
+    """
+    Remove small lesions from a 5D binary label tensor.
+
+    Parameters:
+    - binary_label_5d_tensor: 5D PyTorch tensor with shape (1, 1, D, H, W), the binary label of lesions.
+    - min_size: int, minimum size of lesion to keep.
+
+    Returns:
+    - filtered_label_5d_tensor: 5D PyTorch tensor, the binary label with small lesions removed.
+    """
+    # Ensure tensor is on CPU and convert to NumPy array
+    binary_label_3d_np = binary_label_5d_tensor.cpu().numpy()[0, 0]
+    
+    # Label connected components
+    labeled_array, num_features = label(binary_label_3d_np)
+    # print(f'Number of lesion is {num_features}')
+
+    # Filter components using Numba-accelerated function
+    keep_mask = filter_components(labeled_array, num_features, min_size)
+    
+    _, num_lesion_after_filter = label(keep_mask)
+    # print(f'Number of lesion after filter is {num_lesion_after_filter}')
+
+    # Convert the mask back to 5D NumPy array and then to PyTorch tensor
+    filtered_label_5d_np = keep_mask.astype(np.uint8)[None, None, ...]  # Add back the batch and channel dimensions
+    filtered_label_5d_tensor = torch.from_numpy(filtered_label_5d_np)
+
+    return filtered_label_5d_tensor, num_lesion_after_filter
+
+@jit(nopython=True)
+def filter_components(labeled_array, num_features, min_size):
+    """
+    Numba-accelerated function to filter out small components.
+
+    Parameters:
+    - labeled_array: 3D numpy array, labeled connected components.
+    - num_features: int, number of connected components.
+    - min_size: int, minimum size of components to keep.
+
+    Returns:
+    - A boolean array where True represents pixels to keep.
+    """
+    output = np.zeros(labeled_array.shape, dtype=np.bool_)
+    for i in range(1, num_features + 1):
+        component = (labeled_array == i)
+        if component.sum() >= min_size:
+            output |= component
+    return output

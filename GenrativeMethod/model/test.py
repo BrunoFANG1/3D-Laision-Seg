@@ -6,6 +6,7 @@ from torch.utils.data import Subset
 import numpy as np
 import datetime
 import os
+import nibabel as nib
 import sys
 import json
 import pandas as pd
@@ -19,7 +20,7 @@ from monai.inferers import sliding_window_inference, SlidingWindowInferer
 from torch.utils.data import DataLoader
 
 
-from Util import train_test_transform, model_selection
+from Util import train_test_transform, model_selection, remove_small_lesions_5d_tensor
 
 def parse_args():
     parser = argparse.ArgumentParser(description="StrokeAI Training Script")
@@ -122,6 +123,7 @@ def main():
 
     total_test_loss = 0
     test_samples = 0
+    num_lesion = 0
     with torch.no_grad():
         for batch_idx, sample in enumerate(test_loader):
             print(batch_idx)
@@ -135,9 +137,19 @@ def main():
             pred = torch.sigmoid(pred)
             pred = pred > (pred.max() + pred.min())/2
 
-            # Save pred to json file
-
             label = sample['label'].to(device)
+
+            # Filter out small lesion
+            label, num_lesion_after_filter = remove_small_lesions_5d_tensor(label, min_size=8000)
+            print(f'Number of lesion after filter is {num_lesion_after_filter}')
+            if num_lesion_after_filter<1:
+                continue
+
+            pred, _ = remove_small_lesions_5d_tensor(pred, min_size=8000)
+            label = label.to(device)
+            pred = pred.to(device)
+
+            num_lesion += num_lesion_after_filter
             loss_ = test_loss(pred, label)
             total_test_loss += loss_.item() * sample['ct'].size(0)
             test_samples += sample['ct'].size(0)
@@ -147,12 +159,20 @@ def main():
                 "name": sample['id'][0],
                 "dice_loss": loss_.item(),
             }
-            raw_data = {
-                "id": batch_idx,
-                "name": sample['id'][0],
-                "pred": pred.int().cpu().numpy().tolist(),
-                "label": label.int().cpu().numpy().tolist(),
-            }
+
+            # raw_data = {
+            #     "id": batch_idx,
+            #     "name": sample['id'][0],
+            #     "pred": pred.int().cpu().numpy().tolist(),
+            #     "label": label.int().cpu().numpy().tolist(),
+            # }
+
+            affine_matrix = np.eye(4)
+            pred_numpy = pred.int().cpu().numpy()
+            nifti_img = nib.Nifti1Image(pred_numpy[0,0], affine=affine_matrix)
+            nib.save(nifti_img, './test_result/predicted_labels.nii.gz')
+            print(dice_data['name'])
+            assert False
 
             dice_file.append(dice_data)
             # data_file.append(raw_data) # For some unknow reason, it is too large
@@ -167,6 +187,7 @@ def main():
 
         avg_test_loss = total_test_loss / test_samples
         print(f'The final loss is {avg_test_loss}')
+        print(f'Total number of lesion over the threshold is {num_lesion}')
 
 
 if __name__ == '__main__':
