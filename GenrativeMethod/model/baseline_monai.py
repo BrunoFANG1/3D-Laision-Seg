@@ -7,6 +7,7 @@ import numpy as np
 import datetime
 import os
 import sys
+from omegaconf import OmegaConf
 from sklearn.model_selection import train_test_split
 import monai
 
@@ -53,10 +54,13 @@ def reduce_loss(loss, rank, world_size):
 def main(rank, world_size):
 
     setup(rank, world_size)
-    args = parse_args()
+    Default_config = OmegaConf.load('./config/config.yaml')
+    input_config = OmegaConf.from_cli()
+    args = OmegaConf.merge(Default_config, input_config)
+    print(args)
     current_time = datetime.datetime.now()
     timestamp = current_time.strftime("%Y%m%d_%H%M")
-    args_dict = vars(args)
+    args_dict = OmegaConf.to_container(args, resolve=True)
 
     # Training Parameters
     gradient_accumulation_steps = args.gradient_accumulation_steps
@@ -80,8 +84,8 @@ def main(rank, world_size):
     test_dataset = Dataset(data=test_data_dicts, transform=test_transforms)
     train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank) 
     test_sampler = DistributedSampler(test_dataset, num_replicas=world_size, rank=rank)
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False, sampler=train_sampler)
-    test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False, sampler=test_sampler)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=False, sampler=train_sampler, num_workers=8)
+    test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False, sampler=test_sampler, num_workers=8)
 
     ################ Model initialization ##################
     model = model_selection(args)
@@ -207,44 +211,3 @@ if __name__ == '__main__':
     world_size = torch.cuda.device_count()
     print(f"There are {world_size} CUDA device")
     mp.spawn(main, args=(world_size,), nprocs=world_size, join=True)
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(description="StrokeAI Training Script")
-
-    # Model Parameters
-    ### You have to give a name of the model name
-    parser.add_argument('--model_name', type=str, required=True, help='Name of the model to use')
-
-    # log info
-    parser.add_argument('--wandb', action='store_true', help='log data to wandb')
-
-    # Dataset Parameters
-    parser.add_argument('--CT_root', type=str, default='/home/bruno/xfang/dataset/images', help='Root directory for CT images')
-    parser.add_argument('--DWI_root', type=str, default='/scratch4/rsteven1/DWI_coregis_20231208', help='Root directory for DWI images')
-    parser.add_argument('--ADC_root', type=str, default='/scratch4/rsteven1/ADC_coregis_20231228', help='Root directory for ADC images')
-    parser.add_argument('--label_root', type=str, default='/home/bruno/xfang/dataset/labels', help='Root directory for label images')
-    parser.add_argument('--MRI_type', type=str, default='ADC', choices=['ADC', 'DWI', 'Other'], help='Type of MRI images')
-    parser.add_argument('--map_file', type=str, default= "/home/bruno/3D-Laision-Seg/GenrativeMethod/efficient_ct_dir_name_to_XNATSessionID_mapping.json", help='Path to the map file')
-    
-    parser.add_argument('--scale_intensity', action='store_true', help='Apply ScaleIntensityd transform')
-    parser.add_argument('--spatial_pad', action='store_true', help='Apply SpatialPadd transform')
-    parser.add_argument('--padding_size', nargs=3, type=int, default=[224, 224, 224], help='Padding size')
-    parser.add_argument('--flip', action='store_true',help='Flip along x,y,z')
-    parser.add_argument('--rand_spatial_crop', action='store_true',help='Apply RandSpatialCropd transform')
-    parser.add_argument('--crop_size', nargs=3, type=int, default=[96, 96, 96], help='Spatial size for RandSpatialCropd')
-    parser.add_argument('--rand_affine', action='store_true', help='Apply RandAffined transform')
-    parser.add_argument('--to_tensor', action='store_false', help='Apply ToTensord transform')
-
-
-    # Training Parameters
-    parser.add_argument('--learning_rate', type=float, default=1e-5, help='Learning rate for the optimizer')
-    parser.add_argument('--epochs', type=int, default=1000, help='Number of training epochs')
-    parser.add_argument('--batch_size', type=int, default=1, help='Batch size for training and testing')
-    parser.add_argument('--gradient_accumulation_steps', type=int, default=1, help='Number of gradient accumulation steps')
-
-    # Add more arguments as needed
-    parser.add_argument('--resuming', action='store_true', help='Continue trianing from previous checkpoint')
-    parser.add_argument('--checkpoint_path', type=str, default=None, help='Path for model checkpoint')
-
-    return parser.parse_args()

@@ -4,27 +4,100 @@ from monai.transforms import (
     SpatialPadd, RandSpatialCropd, RandAffined, ToTensord,
     RandRotated, RandZoomd, RandFlipd
 )
+from monai.transforms import Transform
+from monai.transforms.utils import equalize_hist
 
 import torch
 import numpy as np
 from scipy.ndimage import label
 from numba import jit
 
+class CustomEqualizeHist(Transform):
+    def __init__(self, keys, num_bins='auto', min=0, max=1):
+        self.keys = keys
+        self.num_bins = num_bins
+        self.min = min
+        self.max = max
 
+    def __call__(self, data):
+        d = dict(data)
+
+        # label = d['label']
+        # label_ = np.array(label)
+        # import matplotlib.pyplot as plt
+        # for i in range(180):
+        #     if np.sum(label_[0,:,:,i]) > 100:
+        #         print('i')
+        #         print(i)
+        #         print(np.sum(label_[0,:,:,i]))
+
+        # for j in range(180):
+        #     if np.sum(label_[0,:,j,:]) > 100:
+        #         print(j)
+        #         print(j)
+        #         print(np.sum(label_[0,:,j,:]))
+            
+        # for k in range(180):
+        #     if np.sum(label_[0,k,:,:]) > 100:
+        #         print('k')
+        #         print(k)
+        #         print(np.sum(label_[0,k,:,:]) )
+
+        # plt.imshow(label_[0,:,:,115], cmap='gray')  # Use grayscale color map for mask visualization
+        # plt.axis('off')  # Turn off axis numbering and labels
+        # plt.savefig(f'mask_slice_3.png', bbox_inches='tight', pad_inches=0)  # Save the plot as a PNG image
+        # plt.close()
+
+        for key in self.keys:
+            img = d[key]
+            mask = img > 0
+            
+            img_ = np.array(img)
+            mask_ = np.array(mask)
+            # print(mask.shape)
+            # print(img.mean())
+            # import matplotlib.pyplot as plt
+            # plt.imshow(img_[0,:,:,115], cmap='gray')  # Use grayscale color map for mask visualization
+            # plt.axis('off')  # Turn off axis numbering and labels
+            # plt.savefig(f'mask_slice_1.png', bbox_inches='tight', pad_inches=0)  # Save the plot as a PNG image
+            # plt.close()
+
+            equalized_img_np = equalize_hist(img_, mask=mask_, num_bins=self.num_bins, min=self.min, max=self.max)
+
+            # plt.imshow(equalized_img_np[0,:,:,115], cmap='gray')  # Use grayscale color map for mask visualization
+            # plt.axis('off')  # Turn off axis numbering and labels
+            # plt.savefig(f'mask_slice_2.png', bbox_inches='tight', pad_inches=0)  # Save the plot as a PNG image
+            # plt.close()
+            # assert False
+
+             # Convert back to original data type and device
+            equalized_img = torch.as_tensor(equalized_img_np, device=img.device if isinstance(img, torch.Tensor) else 'cpu')           
+            d[key].tensor = equalized_img
+        return d
 
 def train_test_transform(args):
 
+    # create test set transformation
+    test_transform_list = [
+        LoadImaged(keys=['ct', 'label']),
+        AddChanneld(keys=['ct', 'label'])
+        # ScaleIntensityd(keys=['ct']),
+    ]
     # create train set transformation
     train_transform_list = [
         LoadImaged(keys=['ct', 'label']),
         AddChanneld(keys=['ct', 'label'])
     ]
+
     if args.scale_intensity:
         train_transform_list.append(ScaleIntensityd(keys=['ct']))
     if args.spatial_pad:
         original_shape = [189, 233, 197]
         assert sum([l>=r for l, r in zip(args.padding_size, original_shape)]) == 3, "Padding size must be greater than the original shape in all dimensions."
         train_transform_list.append(SpatialPadd(keys=['ct', 'label'], spatial_size=[224, 224, 224], mode='edge'))
+    if args.histogram_equal:
+        train_transform_list.append(CustomEqualizeHist(keys=['ct']))
+        test_transform_list.append(CustomEqualizeHist(keys=['ct']))
     if args.rand_affine:
         train_transform_list.append(RandAffined(keys=['ct', 'label'], 
                                                 rotate_range=(360, 360, 360),
@@ -41,23 +114,26 @@ def train_test_transform(args):
         train_transform_list.append(RandSpatialCropd(keys=["ct", "label"], roi_size=args.crop_size, random_size=False))
     if args.to_tensor: # default is true
         train_transform_list.append(ToTensord(keys=['ct', 'label']))
+        test_transform_list.append(ToTensord(keys=['ct', 'label']))
 
     train_transforms = Compose(train_transform_list)
-
-    test_transforms = Compose([
-        LoadImaged(keys=['ct', 'label']),
-        AddChanneld(keys=['ct', 'label']),
-        # ScaleIntensityd(keys=['ct']),
-        ToTensord(keys=['ct', 'label'])
-    ])
-    print(train_transform_list)
+    test_transforms = Compose(test_transform_list)
+    print(train_transforms)
+    print(test_transforms)
     return train_transforms, test_transforms
 
 
 def model_selection(args):
     if args.model_name == '3D_Unet':
         print('we are using 3D Unet model')
-        return None
+        model = monai.networks.nets.UNet(
+            spatial_dims=3,
+            in_channels=1,
+            out_channels=1,
+            channels=(16, 32, 64, 128),
+            strides=(2, 2, 2, 2),      
+        )
+        return model
     elif args.model_name == 'Att_Unet':
         print('We are using Attention Unet model')
         model = monai.networks.nets.AttentionUnet(
@@ -120,7 +196,7 @@ def remove_small_lesions_5d_tensor(binary_label_5d_tensor, min_size=25):
     return filtered_label_5d_tensor, num_lesion_after_filter
 
 @jit(nopython=True)
-def filter_components(labeled_array, num_features, min_size):
+def filter_components(labeled_array, num_features, min_size, max_size = 100000000):
     """
     Numba-accelerated function to filter out small components.
 
@@ -135,6 +211,6 @@ def filter_components(labeled_array, num_features, min_size):
     output = np.zeros(labeled_array.shape, dtype=np.bool_)
     for i in range(1, num_features + 1):
         component = (labeled_array == i)
-        if component.sum() >= min_size:
+        if component.sum() >= min_size and component.sum()<= max_size:
             output |= component
     return output
