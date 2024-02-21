@@ -33,12 +33,13 @@ def setup(rank, world_size):
 def cleanup():
     dist.destroy_process_group()
 
-def reduce_loss(loss, rank, world_size):
+def reduce_loss(loss, sample_num, rank, world_size):
     """
     Reduce the loss across all processes so that every process has the average loss.
 
     Args:
-    loss (float): The loss to reduce.
+    loss (float): The loss to reduce per process.
+    sample_num(int): The num of samples per process
     rank (int): The rank of the current process in the distributed training setup.
     world_size (int): The total number of processes in the distributed training setup.
 
@@ -46,9 +47,11 @@ def reduce_loss(loss, rank, world_size):
     float: The reduced loss.
     """
     reduced_loss = torch.tensor(loss, device="cuda:{}".format(rank))
+    reduced_sample_num =  torch.tensor(sample_num, device="cuda:{}".format(rank))
     dist.all_reduce(reduced_loss, op=dist.ReduceOp.SUM)
-    reduced_loss = reduced_loss / world_size
-    return reduced_loss.item()
+    dist.all_reduce(reduced_sample_num, op=dist.ReduceOp.SUM)
+    loss_all_process = reduced_loss/reduced_sample_num
+    return loss_all_process.item()
 
 
 def main(rank, world_size):
@@ -62,7 +65,7 @@ def main(rank, world_size):
     timestamp = current_time.strftime("%Y%m%d_%H%M")
     args_dict = OmegaConf.to_container(args, resolve=True)
 
-    # Training Parameters
+    ################# Training Parameters ########################
     gradient_accumulation_steps = args.gradient_accumulation_steps
     batch_size= args.batch_size
     learning_rate = args.learning_rate
@@ -96,11 +99,12 @@ def main(rank, world_size):
 
 
     ############### Loss and Optimizer   ###################
-    train_loss = monai.losses.GeneralizedDiceFocalLoss(sigmoid=True)
+    # train_loss = monai.losses.GeneralizedDiceFocalLoss(sigmoid=True)
+    train_loss = monai.losses.DiceLoss(sigmoid=True)
     test_loss = monai.losses.DiceLoss()
     # optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, betas=(0.5, 0.999))
-    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=0.01, amsgrad=False)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=1000, eta_min=0, last_epoch=-1, verbose=False)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay = 1e-5)
+    # scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=1000, eta_min=0, last_epoch=-1, verbose=False)
 
     ################ Resuming ####################
     if args.resuming:
@@ -138,30 +142,32 @@ def main(rank, world_size):
         total_train_loss = 0.0
         train_samples = 0
         optimizer.zero_grad()
-        avg_test_loss = 0.0
+        best_test_loss = 1.0
 
         for batch_idx, sample in enumerate(train_loader):
 
             # regular training
             label = sample['label'].to(rank)
             optimizer.zero_grad()
-            with torch.cuda.amp.autocast():
-                pred = model(sample['ct'].to(rank))
-                loss_ = train_loss(pred, label) / gradient_accumulation_steps
-                # loss_ = (train_loss(pred[0], label) + train_loss(pred[1], label) + train_loss(pred[2], label) + train_loss(pred[3], label)) / gradient_accumulation_steps
 
-            scaler.scale(loss_).backward()
-            # loss_.backward()
+            # with torch.cuda.amp.autocast():                                   # Half precision
+            #     pred = model(sample['ct'].to(rank))                           # Half precision
+            #     loss_ = train_loss(pred, label) / gradient_accumulation_steps # Half precision
+                # loss_ = (train_loss(pred[0], label) + train_loss(pred[1], label) + train_loss(pred[2], label) + train_loss(pred[3], label)) / gradient_accumulation_steps
+            pred = model(sample['ct'].to(rank))
+            loss_ = train_loss(pred, label) / gradient_accumulation_steps
+
+            # scaler.scale(loss_).backward()                                     # Half precision
+            loss_.backward()
             total_train_loss += loss_.item() * sample['ct'].size(0) * gradient_accumulation_steps
             train_samples += sample['ct'].size(0)
 
             if (batch_idx + 1) % gradient_accumulation_steps == 0 or (batch_idx + 1) == len(train_loader):
-                scaler.step(optimizer)
-                scaler.update()
-                # optimizer.step()
-        scheduler.step()
+                # scaler.step(optimizer)                           # Half precision
+                # scaler.update()                           # Half precision
+                optimizer.step()
 
-        avg_train_loss = reduce_loss(total_train_loss / train_samples, rank, world_size)
+        avg_train_loss = reduce_loss(total_train_loss, train_samples, rank, world_size)
         if rank == 0 and args.wandb:
             print(f"Average Training Loss for Epoch {epoch}: {avg_train_loss}")
             wandb.log({"epoch": epoch, "average_train_loss": avg_train_loss})
@@ -190,7 +196,8 @@ def main(rank, world_size):
                 test_samples += sample['ct'].size(0)
 
         # Save the model checkpoint with lowest test loss
-        if rank == 0 and avg_test_loss <= total_test_loss / test_samples:
+        avg_test_loss = reduce_loss(total_test_loss, test_samples, rank, world_size)
+        if rank == 0 and best_test_loss <= avg_test_loss:
             PATH = f'/home/bruno/3D-Laision-Seg/GenrativeMethod/model/model_checkpoint/{args.model_name}_{epochs}_epoch_{timestamp}.pth'
             checkpoint = {
                 'model_state_dict': model.state_dict(),
@@ -198,7 +205,6 @@ def main(rank, world_size):
             }
             torch.save(checkpoint, PATH)
 
-        avg_test_loss = total_test_loss / test_samples
         if rank == 0 and args.wandb:
             print(f"Average Test Loss for Epoch {epoch}: {avg_test_loss}")
             wandb.log({"epoch": epoch, "average_test_loss": avg_test_loss})
