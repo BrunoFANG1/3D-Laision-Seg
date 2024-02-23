@@ -47,6 +47,7 @@ def parse_args():
     parser.add_argument('--rand_spatial_crop', action='store_true',help='Apply RandSpatialCropd transform')
     parser.add_argument('--crop_size', nargs=3, type=int, default=[96, 96, 96], help='Spatial size for RandSpatialCropd')
     parser.add_argument('--rand_affine', action='store_true', help='Apply RandAffined transform')
+    parser.add_argument('--histogram_equal', action='store_true', help='Apply RandAffined transform')
     parser.add_argument('--to_tensor', action='store_false', help='Apply ToTensord transform')
 
 
@@ -59,6 +60,8 @@ def parse_args():
     # Add more arguments as needed
     parser.add_argument('--resuming', action='store_true', help='Continue trianing from previous checkpoint')
     parser.add_argument('--checkpoint_path', type=str, default=None, help='Path for model checkpoint')
+    parser.add_argument('--min_lesion_size', type=int, default=0, help='Limit for lesion size we want to consider, below this limit, we will ignore the lesion')
+    parser.add_argument('--max_lesion_size', type=int, default=10000000, help='Limit for lesion size we want to consider, above this limit, we will ignore the lesion')
 
     return parser.parse_args()
 
@@ -140,17 +143,18 @@ def main():
             label = sample['label'].to(device)
 
             # Filter out small lesion
-            label, num_lesion_after_filter = remove_small_lesions_5d_tensor(label, min_size=8000)
+            label, num_lesion_after_filter = remove_small_lesions_5d_tensor(label, min_size=args.min_lesion_size, max_size= args.max_lesion_size)
             print(f'Number of lesion after filter is {num_lesion_after_filter}')
             if num_lesion_after_filter<1:
                 continue
 
-            pred, _ = remove_small_lesions_5d_tensor(pred, min_size=8000)
+            # pred, pred_lesion_num = remove_small_lesions_5d_tensor(pred, min_size=args.min_lesion_size, max_size= args.max_lesion_size)
+            
             label = label.to(device)
             pred = pred.to(device)
-
             num_lesion += num_lesion_after_filter
-            loss_ = test_loss(pred, label)
+            # loss_ = test_loss(pred, label)
+            loss_ = (label*pred).sum()/label.sum() # relative value 
             total_test_loss += loss_.item() * sample['ct'].size(0)
             test_samples += sample['ct'].size(0)
 
@@ -167,12 +171,13 @@ def main():
             #     "label": label.int().cpu().numpy().tolist(),
             # }
 
-            affine_matrix = np.eye(4)
-            pred_numpy = pred.int().cpu().numpy()
-            nifti_img = nib.Nifti1Image(pred_numpy[0,0], affine=affine_matrix)
-            nib.save(nifti_img, './test_result/predicted_labels.nii.gz')
-            print(dice_data['name'])
-            assert False
+            # if pred_lesion_num > 0:
+            #     affine_matrix = np.eye(4)
+            #     pred_numpy = pred.int().cpu().numpy()
+            #     nifti_img = nib.Nifti1Image(pred_numpy[0,0], affine=affine_matrix)
+            #     nib.save(nifti_img, './test_result/predicted_labels.nii.gz')
+            #     print(dice_data['name'])
+            #     assert False
 
             dice_file.append(dice_data)
             # data_file.append(raw_data) # For some unknow reason, it is too large
