@@ -2,7 +2,7 @@ import monai
 from monai.transforms import (
     Compose, LoadImaged, AddChanneld, ScaleIntensityd, 
     SpatialPadd, RandSpatialCropd, RandAffined, ToTensord,
-    RandRotated, RandZoomd, RandFlipd
+    RandRotated, RandZoomd, RandFlipd, CropForegroundd, RandCropByPosNegLabeld,Resized
 )
 from monai.transforms import Transform
 from monai.transforms.utils import equalize_hist
@@ -11,6 +11,8 @@ import torch
 import numpy as np
 from scipy.ndimage import label
 from numba import jit
+
+from AttenUnet.AttenUnet_4M import Att_Unet
 
 class CustomEqualizeHist(Transform):
     def __init__(self, keys, num_bins='auto', min=0, max=1):
@@ -80,46 +82,50 @@ def train_test_transform(args):
     # create test set transformation
     test_transform_list = [
         LoadImaged(keys=['ct', 'label']),
-        AddChanneld(keys=['ct', 'label'])
+        AddChanneld(keys=['ct', 'label']),
+        CropForegroundd(keys=['ct', 'label'], source_key='ct'),
+        SpatialPadd(keys=['ct', 'label'], spatial_size=[160, 192, 176]) # original_shape = [189, 233, 197]
         # ScaleIntensityd(keys=['ct']),
     ]
     # create train set transformation
     train_transform_list = [
         LoadImaged(keys=['ct', 'label']),
-        AddChanneld(keys=['ct', 'label'])
+        AddChanneld(keys=['ct', 'label']),
+        CropForegroundd(keys=['ct', 'label'], source_key='ct'),
+        SpatialPadd(keys=['ct', 'label'], spatial_size=[160, 192, 176]), # Can be deleted if using any resize
     ]
 
     if args.scale_intensity:
         train_transform_list.append(ScaleIntensityd(keys=['ct']))
-    if args.spatial_pad:
-        original_shape = [189, 233, 197]
-        assert sum([l>=r for l, r in zip(args.padding_size, original_shape)]) == 3, "Padding size must be greater than the original shape in all dimensions."
-        train_transform_list.append(SpatialPadd(keys=['ct', 'label'], spatial_size=[224, 224, 224], mode='edge'))
     if args.histogram_equal:
         train_transform_list.append(CustomEqualizeHist(keys=['ct']))
         test_transform_list.append(CustomEqualizeHist(keys=['ct']))
+    if args.RandCropByPosNegLabeld:
+        train_transform_list.append(RandCropByPosNegLabeld(keys=['ct', 'label'], spatial_size=(100,100,100), label_key='label', pos=3,neg=1, num_samples=4))
+    if args.rand_spatial_crop:
+        train_transform_list.append(RandSpatialCropd(keys=["ct", "label"], roi_size=(20,20,20), random_size=True))
     if args.rand_affine:
         train_transform_list.append(RandAffined(keys=['ct', 'label'], 
-                                                rotate_range=(360, 360, 360),
-                                                scale_range=(0.8, 1.2), 
+                                                # rotate_range=(360, 360, 360),
+                                                scale_range=(1, 5), 
                                                 # translate_range=(5, 5, 5),
                                                 mode=('bilinear', 'nearest'), 
                                                 prob=0.5,
                                                 padding_mode='border'))
+    if args.resize:
+        train_transform_list.append(Resized(keys=["ct", "label"], spatial_size=(96,96,96), mode=['area', 'nearest']))
     if args.flip:
         train_transform_list.append(RandFlipd(keys=["ct", "label"], prob=0.5, spatial_axis=0))
         train_transform_list.append(RandFlipd(keys=["ct", "label"], prob=0.5, spatial_axis=1))
         train_transform_list.append(RandFlipd(keys=["ct", "label"], prob=0.5, spatial_axis=2))
-    if args.rand_spatial_crop:
-        train_transform_list.append(RandSpatialCropd(keys=["ct", "label"], roi_size=args.crop_size, random_size=False))
     if args.to_tensor: # default is true
         train_transform_list.append(ToTensord(keys=['ct', 'label']))
         test_transform_list.append(ToTensord(keys=['ct', 'label']))
 
     train_transforms = Compose(train_transform_list)
     test_transforms = Compose(test_transform_list)
-    print(train_transforms)
-    print(test_transforms)
+    print(train_transform_list)
+    print(test_transform_list)
     return train_transforms, test_transforms
 
 
@@ -148,6 +154,11 @@ def model_selection(args):
         )
         return model
 
+    elif args.model_name == 'Att_Unet_Joe':
+        print('We are using Attention Unet model from Rongxi and Joe Lee')
+        model = Att_Unet()
+        return model
+    
     elif args.model_name == 'Swin_UnetR':
         print('we are using Swin_UnetR model')
         model = monai.networks.nets.SwinUNETR(img_size=(128, 128,128), in_channels=1, out_channels=1, feature_size=24)
@@ -165,7 +176,7 @@ def model_selection(args):
         assert False
 
 
-def remove_small_lesions_5d_tensor(binary_label_5d_tensor, min_size=25):
+def remove_small_lesions_5d_tensor(binary_label_5d_tensor, min_size=25, max_size= 10000000):
     """
     Remove small lesions from a 5D binary label tensor.
 
@@ -184,7 +195,7 @@ def remove_small_lesions_5d_tensor(binary_label_5d_tensor, min_size=25):
     # print(f'Number of lesion is {num_features}')
 
     # Filter components using Numba-accelerated function
-    keep_mask = filter_components(labeled_array, num_features, min_size)
+    keep_mask = filter_components(labeled_array, num_features, min_size, max_size)
     
     _, num_lesion_after_filter = label(keep_mask)
     # print(f'Number of lesion after filter is {num_lesion_after_filter}')
